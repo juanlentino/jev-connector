@@ -26,7 +26,7 @@ part only you can do.
 - [ ] **Confirm the connector card renders.** It should appear under Settings →
       Connectors with its own type, not grouped with the AI providers, and
       saving a key should not trigger AI Client validation.
-- [ ] **Build the zip**: push a `v0.2.1` tag, or run the Release workflow by
+- [ ] **Build the zip**: push a `v0.2.2` tag, or run the Release workflow by
       hand, and download the artifact. Install that zip on a clean site.
 
 ## The four things that get plugins rejected
@@ -82,8 +82,8 @@ You get SVN access at `https://plugins.svn.wordpress.org/connector-for-typesafe-
 svn co https://plugins.svn.wordpress.org/connector-for-typesafe-jev/ svn-plugin
 cd svn-plugin
 # unzip the release artifact into trunk/, put .wordpress-org/ images into assets/
-svn cp trunk tags/0.2.1
-svn ci -m "Release 0.2.1"
+svn cp trunk tags/0.2.2
+svn ci -m "Release 0.2.2"
 ```
 
 The `.wordpress-org/` folder currently holds only a README describing the

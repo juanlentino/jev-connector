@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 0.x versioning until the public API is frozen at 1.0.
 
+## [0.2.2] - 2026-09-18
+
+### Added
+
+- `logo_url` on the connector registration, pointing at
+  `assets/images/typesafe.png` (TypeSafe's published favicon mark, 192px,
+  transparent). The card under **Settings → Connectors** showed core's generic
+  plug icon before. `plugins_url()` is used the same way core resolves its own
+  provider logos.
+
+### Verified live
+
+First run on a real WordPress 7.1 site, which retires two items from the
+"still unverified" list: the card renders under its own type, separate from
+the AI providers, and saving a key shows **Connected** rather than being wiped
+by AI Client validation.
+
 ## [0.2.1] - 2026-09-18
 
 Directory readiness. No behaviour change.

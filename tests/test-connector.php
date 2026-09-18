@@ -39,6 +39,8 @@ final class ConnectorTest extends TestCase {
 		$this->assertSame( 'TYPESAFE_API_KEY', $args['authentication']['env_var_name'] );
 		$this->assertArrayHasKey( 'credentials_url', $args['authentication'] );
 		$this->assertArrayHasKey( 'file', $args['plugin'] );
+		$this->assertStringEndsWith( '/assets/images/typesafe.png', $args['logo_url'] );
+		$this->assertFileExists( dirname( __DIR__ ) . '/assets/images/typesafe.png' );
 	}
 
 	/**
