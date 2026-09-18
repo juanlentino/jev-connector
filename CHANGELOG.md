@@ -19,6 +19,18 @@ All notable changes to this project are documented here. The format follows
 - Private vulnerability reporting enabled on the repository; `SECURITY.md`
   points there rather than at an email address.
 - `composer check` runs lint and tests together.
+- `tests/test-consumer-contract.php` pins the surface other plugins depend
+  on, by the same `function_exists()` / `class_exists()` lookups a consumer
+  uses: `JevConnector\ask()` and its `Response|WP_Error` return,
+  `Response::to_array()` as the untouched body, `WP_Error` data carrying
+  `status`, `Connector::get_api_key()` and `Connector::SETTING_NAME`. Signal &
+  Noise Tools 16.5.3 is the first consumer. Changing anything in that file is
+  a breaking change.
+
+### Fixed
+
+- The test bootstrap never loaded `includes/functions.php`, so
+  `JevConnector\ask()` — the entry point consumers call — had no coverage.
 
 ## [0.2.2] - 2026-09-18
 

@@ -418,3 +418,4 @@ require_once dirname( __DIR__ ) . '/includes/modules/abstract-module.php';
 require_once dirname( __DIR__ ) . '/includes/modules/class-comment-guardrail.php';
 require_once dirname( __DIR__ ) . '/includes/modules/class-auto-tagger.php';
 require_once dirname( __DIR__ ) . '/includes/class-modules.php';
+require_once dirname( __DIR__ ) . '/includes/functions.php';
