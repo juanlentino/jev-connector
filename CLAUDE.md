@@ -18,7 +18,11 @@ validates them against it on save, clearing keys it cannot verify. The AI Client
 covers generative capabilities only (text, image, speech, video). Jev returns
 probabilities, choices and scores. Registering as an AI provider would get a
 working key silently wiped. Akismet's non-AI connector is the precedent we
-follow. See `includes/class-connector.php`.
+follow. See `includes/class-connector.php`. The validate-and-reset behaviour
+is not inference: core's own ticket WordPress/wordpress-develop#13031
+describes `ai_provider` keys being re-validated against the provider on every
+settings update and reset when that fails. Cite it if anyone suggests
+switching the type.
 
 **The connector `type` is not a user setting.** It groups the card and, for AI
 providers, feeds the auto-generated `setting_name`. A user flipping it after
