@@ -5,7 +5,7 @@ part only you can do.
 
 ## Before you submit
 
-- [ ] **Check CI is green on `main`.** The Plugin Check job runs the same
+- [ ] **Check CI is green on `trunk`.** The Plugin Check job runs the same
       [Plugin Check](https://wordpress.org/plugins/plugin-check/) the reviewers
       do, against the exact file set the zip contains, in a folder named after
       the slug. It has to run that way: Plugin Check derives the slug from the

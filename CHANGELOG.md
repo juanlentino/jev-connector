@@ -27,6 +27,14 @@ All notable changes to this project are documented here. The format follows
   Noise Tools 16.5.3 is the first consumer. Changing anything in that file is
   a breaking change.
 
+### Changed
+
+- The default branch is `trunk`, the name every WordPress-org repository
+  (core, Gutenberg, OpenStation, Plugin Check) carries over from SVN.
+  Release branches are not created ahead of need; a numbered branch such as
+  `0.2` is cut from its tag only if that line needs a fix after a newer
+  minor exists, which is also the WordPress convention.
+
 ### Fixed
 
 - The test bootstrap never loaded `includes/functions.php`, so

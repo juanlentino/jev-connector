@@ -225,7 +225,7 @@ composer check  # lint + tests
 - [SECURITY.md](SECURITY.md): what is sent where, and how to report a vulnerability
 - [SUBMITTING.md](SUBMITTING.md): the pre-submission checklist for the plugin directory
 
-`main` is protected. Every change goes through a pull request with PHPUnit on PHP 7.4 to 8.5, WordPress Coding Standards, and the directory's own Plugin Check all green.
+`trunk` is protected. Every change goes through a pull request with PHPUnit on PHP 7.4 to 8.5, WordPress Coding Standards, and the directory's own Plugin Check all green.
 
 ## License
 

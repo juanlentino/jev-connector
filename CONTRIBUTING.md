@@ -41,12 +41,12 @@ Plugin Check runs against a staged copy built from `.distignore`, in a folder
 named after the slug. If you add a development file to the repo root, add it to
 `.distignore` too or Plugin Check will flag it.
 
-`main` is protected: pull requests only, all checks green, branch up to date.
+`trunk` is protected: pull requests only, all checks green, branch up to date.
 This applies to the maintainer as well.
 
 ## Making a change
 
-1. Branch from `main`.
+1. Branch from `trunk`.
 2. Write the test first where the change has logic in it. Decision logic lives
    in pure static methods (`Comment_Guardrail::decide()`,
    `Auto_Tagger::suggestions_from()`, `Question::validate_map()`) precisely so
