@@ -1,6 +1,6 @@
 # Releasing
 
-Releases are cut from `main`, which is protected: nothing lands there except
+Releases are cut from `trunk`, which is protected: nothing lands there except
 through a pull request with every CI check green. A release is a version-bump
 PR followed by a tag.
 
@@ -20,6 +20,14 @@ Documentation-only changes to files that do not ship (`README.md`, `docs/`,
 `CONTRIBUTING.md`) do not bump the version. They go under `## [Unreleased]`
 in `CHANGELOG.md` and ride the next release.
 
+## Branches
+
+`trunk` is the only long-lived branch, as in every WordPress-org repository.
+Feature work is a short branch off `trunk` merged by pull request. A release
+is a tag on `trunk`. A numbered branch (`0.2`) is created only when that line
+needs a fix after a newer minor has shipped: cut it from the tag, fix, tag
+`v0.2.x` from it, and leave it. Do not create one in advance.
+
 ## The version lives in three places
 
 They must move together. The directory serves whatever `Stable tag` points at.
@@ -32,7 +40,7 @@ readme.txt                        Stable tag: X.Y.Z
 
 ## Procedure
 
-1. Branch from `main`. Bump the three version strings.
+1. Branch from `trunk`. Bump the three version strings.
 2. `CHANGELOG.md`: rename `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` and
    start a fresh empty `## [Unreleased]` above it.
 3. `readme.txt`: add a `= X.Y.Z =` entry under `== Changelog ==`. Shorter and
@@ -46,8 +54,8 @@ readme.txt                        Stable tag: X.Y.Z
 7. Tag the merge commit and push the tag:
 
    ```bash
-   git fetch origin main
-   git tag -a vX.Y.Z origin/main -m "X.Y.Z: one line"
+   git fetch origin trunk
+   git tag -a vX.Y.Z origin/trunk -m "X.Y.Z: one line"
    git push origin vX.Y.Z
    ```
 
