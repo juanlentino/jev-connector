@@ -3,6 +3,11 @@
 	"description": "WordPress connector for the TypeSafe System One API (Jev).",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
+	"homepage": "https://github.com/juanlentino/jev-connector",
+	"support": {
+		"issues": "https://github.com/juanlentino/jev-connector/issues",
+		"security": "https://github.com/juanlentino/jev-connector/security/advisories/new"
+	},
 	"require": {
 		"php": ">=7.4"
 	},
@@ -21,6 +26,10 @@
 	"scripts": {
 		"test": "phpunit",
 		"lint": "phpcs",
-		"lint:fix": "phpcbf"
+		"lint:fix": "phpcbf",
+		"check": [
+			"@lint",
+			"@test"
+		]
 	}
 }

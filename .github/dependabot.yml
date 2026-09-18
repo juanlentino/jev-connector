@@ -1,0 +1,19 @@
+# Dev dependencies and workflow actions only; the plugin has no runtime
+# dependencies. Grouped so a week's bumps arrive as one PR per ecosystem,
+# which is one CI run rather than five.
+version: 2
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dev-tooling:
+        patterns: ["*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

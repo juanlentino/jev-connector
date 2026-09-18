@@ -1,0 +1,28 @@
+name: Feature request
+description: A hook, a module, a setting, or a capability the client is missing
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you are trying to do
+      description: The site-level goal, not the implementation. What question are you asking Jev, and what do you want to happen with the answer?
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What you tried
+      description: Hooks, filters or code you used to get close. See docs/HOOKS.md; many things are already reachable without a change.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - A new hook or argument on the client
+        - A new optional module
+        - A change to an existing module
+        - A settings-screen change
+        - Something else
+    validations:
+      required: true

@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 0.x versioning until the public API is frozen at 1.0.
 
+## [Unreleased]
+
+### Added
+
+- Repository documentation, none of which ships in the plugin zip:
+  `CONTRIBUTING.md`, `SECURITY.md`, `docs/ARCHITECTURE.md`, `docs/HOOKS.md`
+  (every filter and action with its exact arguments), `docs/REST-API.md`
+  (every route and error code), `docs/MODULES.md` (the module contract and
+  the guardrail's decision matrix), `docs/RELEASING.md` (version bump, tag,
+  zip, SVN). README gained badges, a requirements section and an index.
+- GitHub issue forms, a pull request template, and weekly grouped Dependabot
+  for Composer dev tooling and workflow actions.
+- Private vulnerability reporting enabled on the repository; `SECURITY.md`
+  points there rather than at an email address.
+- `composer check` runs lint and tests together.
+
 ## [0.2.2] - 2026-09-18
 
 ### Added

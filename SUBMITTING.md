@@ -77,19 +77,9 @@ and saves a takedown later.
 ## After approval
 
 You get SVN access at `https://plugins.svn.wordpress.org/connector-for-typesafe-jev/`.
-
-```bash
-svn co https://plugins.svn.wordpress.org/connector-for-typesafe-jev/ svn-plugin
-cd svn-plugin
-# unzip the release artifact into trunk/, put .wordpress-org/ images into assets/
-svn cp trunk tags/0.2.2
-svn ci -m "Release 0.2.2"
-```
+The per-release SVN procedure, and the versioning rules that go with it, are
+in [docs/RELEASING.md](docs/RELEASING.md).
 
 The `.wordpress-org/` folder currently holds only a README describing the
 icon, banner and screenshot sizes; no images exist yet. They are optional for
-submission and can be added to `assets/` any time after approval.
-
-`Stable tag` in `readme.txt` is what the directory actually serves. Bump it and
-the version header together, every release. SVN is a release repository, not a
-development one — commit finished versions, not work in progress.
+submission and can be added to SVN `assets/` any time after approval.
