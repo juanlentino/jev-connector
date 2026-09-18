@@ -35,16 +35,19 @@ final class Client {
 	 * @param string|null $api_key Explicit key, or null to read the stored one.
 	 */
 	public function __construct( ?string $api_key = null ) {
-		$this->api_key = null !== $api_key ? $api_key : Settings::get_api_key();
+		$this->api_key = null !== $api_key ? $api_key : Connector::get_api_key();
 	}
 
 	/**
-	 * Whether a key is configured.
+	 * Whether a key is available.
+	 *
+	 * Connecting TypeSafe on the core Connectors screen is what authorizes
+	 * outbound requests, so the presence of a key is the whole check.
 	 *
 	 * @return bool
 	 */
 	public function is_configured(): bool {
-		return '' !== $this->api_key && Settings::is_enabled();
+		return '' !== $this->api_key;
 	}
 
 	/**
@@ -59,7 +62,7 @@ final class Client {
 		if ( ! $this->is_configured() ) {
 			return new \WP_Error(
 				'jevc_not_configured',
-				__( 'Set a TypeSafe API key and allow outbound requests on the settings screen first.', 'connector-for-typesafe-jev' )
+				__( 'TypeSafe is not connected. Add an API key under Settings then Connectors.', 'connector-for-typesafe-jev' )
 			);
 		}
 
@@ -101,6 +104,16 @@ final class Client {
 		 */
 		$payload = (array) apply_filters( 'jevc_request_payload', $payload, $args );
 
+		$use_cache = ! isset( $args['cache'] ) || false !== $args['cache'];
+
+		if ( $use_cache ) {
+			$cached = Cache::get( $payload );
+
+			if ( $cached instanceof Response ) {
+				return $cached;
+			}
+		}
+
 		$body = wp_json_encode( $payload );
 
 		if ( false === $body ) {
@@ -110,7 +123,13 @@ final class Client {
 			);
 		}
 
-		return $this->send( $body, $args );
+		$result = $this->send( $body, $args );
+
+		if ( $use_cache && $result instanceof Response ) {
+			Cache::set( $payload, $result );
+		}
+
+		return $result;
 	}
 
 	/**

@@ -94,18 +94,90 @@ final class ClientTest extends TestCase {
 	}
 
 	/**
-	 * Without a key or consent, nothing is sent.
+	 * Until the connector holds a key, nothing is sent.
 	 *
 	 * @return void
 	 */
-	public function test_no_request_without_consent(): void {
-		JevTestState::$options['jevc_settings']['enabled'] = false;
+	public function test_no_request_without_a_key(): void {
+		JevTestState::$options['connectors_typesafe_api_key'] = '';
 
 		$result = ( new Client() )->ask( 'x', array( 'q' => Question::noul( 'Urgent?' ) ) );
 
 		$this->assertTrue( is_wp_error( $result ) );
 		$this->assertSame( 'jevc_not_configured', $result->get_error_code() );
 		$this->assertCount( 0, JevTestState::$requests );
+	}
+
+	/**
+	 * An identical second call is served from cache without a request.
+	 *
+	 * @return void
+	 */
+	public function test_identical_call_is_cached(): void {
+		JevTestState::$responses[] = JevTestState::http( 200, $this->ok_body() );
+
+		$question = array( 'urgency' => Question::noul( 'Urgent?' ) );
+
+		$first  = ( new Client() )->ask( 'same state', $question );
+		$second = ( new Client() )->ask( 'same state', $question );
+
+		$this->assertInstanceOf( Response::class, $first );
+		$this->assertInstanceOf( Response::class, $second );
+		$this->assertSame( 0.97, $second->noul( 'urgency' ) );
+		$this->assertCount( 1, JevTestState::$requests );
+	}
+
+	/**
+	 * A different state misses the cache.
+	 *
+	 * @return void
+	 */
+	public function test_different_state_misses_cache(): void {
+		JevTestState::$responses[] = JevTestState::http( 200, $this->ok_body() );
+		JevTestState::$responses[] = JevTestState::http( 200, $this->ok_body() );
+
+		$question = array( 'urgency' => Question::noul( 'Urgent?' ) );
+
+		( new Client() )->ask( 'state one', $question );
+		( new Client() )->ask( 'state two', $question );
+
+		$this->assertCount( 2, JevTestState::$requests );
+	}
+
+	/**
+	 * A failed call is never cached.
+	 *
+	 * @return void
+	 */
+	public function test_failures_are_not_cached(): void {
+		JevTestState::$responses[] = JevTestState::http( 401 );
+		JevTestState::$responses[] = JevTestState::http( 200, $this->ok_body() );
+
+		$question = array( 'urgency' => Question::noul( 'Urgent?' ) );
+
+		$first  = ( new Client() )->ask( 'same state', $question );
+		$second = ( new Client() )->ask( 'same state', $question );
+
+		$this->assertTrue( is_wp_error( $first ) );
+		$this->assertInstanceOf( Response::class, $second );
+		$this->assertCount( 2, JevTestState::$requests );
+	}
+
+	/**
+	 * Caching can be turned off per call.
+	 *
+	 * @return void
+	 */
+	public function test_cache_can_be_bypassed(): void {
+		JevTestState::$responses[] = JevTestState::http( 200, $this->ok_body() );
+		JevTestState::$responses[] = JevTestState::http( 200, $this->ok_body() );
+
+		$question = array( 'urgency' => Question::noul( 'Urgent?' ) );
+
+		( new Client() )->ask( 'same state', $question, array( 'cache' => false ) );
+		( new Client() )->ask( 'same state', $question, array( 'cache' => false ) );
+
+		$this->assertCount( 2, JevTestState::$requests );
 	}
 
 	/**

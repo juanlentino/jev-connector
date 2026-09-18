@@ -8,6 +8,13 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Registration with the WordPress 7.0 Connectors API, so core owns the
+  credential: `Settings → Connectors` UI, masking in the admin and in REST
+  responses, and resolution order of `TYPESAFE_API_KEY` environment variable,
+  then constant, then stored option.
+- Response cache keyed by a hash of the request payload, with a
+  `jevc_cache_ttl` filter and a per-call `cache` argument. Failures are never
+  cached.
 - `Client` for `POST https://api.typesafe.ai/v1/systemone`, with bearer auth,
   a 20 second default timeout, and bounded exponential backoff on 429, 529 and
   5xx responses (honoring `Retry-After`).
@@ -15,8 +22,9 @@ All notable changes to this project are documented here. The format follows
   shape validation before anything leaves the site.
 - `Response` reader: `noul()`, `choice()`, `score()`, `confidence()`,
   `probabilities()`, `legend()`, `usage()`, and `is_confident()`.
-- Settings screen under **Settings → TypeSafe Jev** with an explicit outbound
-  request consent checkbox and a `JEVC_API_KEY` constant override.
+- Settings screen under **Settings → TypeSafe Jev** for the default model and
+  the REST capability, with a connection status notice that names the key's
+  source and links to the Connectors screen.
 - REST routes `POST /jev/v1/ask` and `GET /jev/v1/status`, capability gated.
 - Filters `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`,
   `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`; actions

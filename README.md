@@ -28,15 +28,21 @@ git clone https://github.com/juanlentino/jev-connector.git wp-content/plugins/co
 
 ## Configure
 
-Go to **Settings → TypeSafe Jev**, paste a key from the [TypeSafe console](https://console.typesafe.ai/settings/keys), and tick the box that allows outbound requests.
+Requires WordPress 7.0, because the key is managed by the core [Connectors API](https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/) rather than by anything this plugin invented.
 
-To keep the key out of the database:
+Go to **Settings → Connectors**, find the TypeSafe Jev card, and paste a key from the [TypeSafe console](https://console.typesafe.ai/settings/keys). Core stores it, masks it in the UI and in REST responses, and resolves it in this order:
 
-```php
-define( 'JEVC_API_KEY', 'your-key' );
-```
+1. `TYPESAFE_API_KEY` environment variable
+2. `TYPESAFE_API_KEY` constant in `wp-config.php`
+3. The stored option
 
-Nothing is sent to TypeSafe until one of those two things is true, and then only when your own code makes a call.
+Nothing is sent to TypeSafe until a key resolves, and then only when your own code makes a call.
+
+### Not an AI provider, on purpose
+
+The core AI Client is generative: text, image, speech, video. Jev is not. It returns a probability, a choice, or a score with a confidence figure, and routing that through `generate_text()` throws away everything worth having. Core also special-cases `type => 'ai_provider'` by validating those keys against the AI Client and clearing the ones it cannot verify, which would quietly wipe a working Jev key.
+
+So this registers as a non-generative service connector, the way a spam filter does. You still get core's key management. You just don't get misfiled.
 
 ## Use
 
@@ -128,8 +134,20 @@ await apiFetch( {
 | `jevc_request_args` | filter | Arguments handed to `wp_remote_post()` |
 | `jevc_retry_delay` | filter | Backoff in seconds; return 0 to disable sleeping |
 | `jevc_rest_capability` | filter | Capability required by the REST route |
+| `jevc_cache_ttl` | filter | Response cache lifetime; return 0 to disable |
+| `jevc_connector_type` | filter | Connector type used to group the card |
+| `jevc_connector_args` | filter | The whole connector definition before registration |
 | `jevc_after_response` | action | Fires with the `Response` on success |
 | `jevc_request_failed` | action | Fires with the `WP_Error` on final failure |
+
+## Caching
+
+Identical requests are served from a transient keyed by a hash of the exact payload, so re-evaluating the same draft or comment costs nothing. Any change to the state, the questions, or the model is a miss. Failures are never cached.
+
+```php
+add_filter( 'jevc_cache_ttl', fn() => 0 );              // disable globally
+JevConnector\ask( $state, $questions, [ 'cache' => false ] ); // bypass once
+```
 
 ## Errors
 

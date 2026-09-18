@@ -43,6 +43,13 @@ final class JevTestState {
 	public static array $actions = array();
 
 	/**
+	 * Stored transients.
+	 *
+	 * @var array<string,mixed>
+	 */
+	public static array $transients = array();
+
+	/**
 	 * Reset everything between tests.
 	 *
 	 * @return void
@@ -51,10 +58,10 @@ final class JevTestState {
 		self::$responses = array();
 		self::$requests  = array();
 		self::$actions   = array();
-		self::$options   = array(
-			'jevc_settings' => array(
-				'api_key'         => 'test-key',
-				'enabled'         => true,
+		self::$transients = array();
+		self::$options    = array(
+			'connectors_typesafe_api_key' => 'test-key',
+			'jevc_settings'               => array(
 				'default_model'   => 'jev-latest',
 				'rest_capability' => 'edit_posts',
 			),
@@ -301,10 +308,58 @@ function wp_remote_retrieve_header( $response, string $name ): string {
 	return isset( $response['headers'][ $name ] ) ? (string) $response['headers'][ $name ] : '';
 }
 
+/**
+ * Transient reader.
+ *
+ * @param string $key Transient name.
+ * @return mixed
+ */
+function get_transient( string $key ) {
+	return JevTestState::$transients[ $key ] ?? false;
+}
+
+/**
+ * Transient writer.
+ *
+ * @param string $key   Transient name.
+ * @param mixed  $value Value to store.
+ * @param int    $ttl   Lifetime in seconds.
+ * @return bool
+ */
+function set_transient( string $key, $value, int $ttl = 0 ): bool {
+	JevTestState::$transients[ $key ] = $value;
+
+	return true;
+}
+
+/**
+ * Admin URL stub.
+ *
+ * @param string $path Path to append.
+ * @return string
+ */
+function admin_url( string $path = '' ): string {
+	return 'https://example.test/wp-admin/' . $path;
+}
+
+/**
+ * Plugin basename stub.
+ *
+ * @param string $file Plugin file.
+ * @return string
+ */
+function plugin_basename( string $file ): string {
+	return basename( dirname( $file ) ) . '/' . basename( $file );
+}
+
+define( 'HOUR_IN_SECONDS', 3600 );
 define( 'JevConnector\\VERSION', '0.1.0' );
+define( 'JevConnector\\PLUGIN_FILE', dirname( __DIR__ ) . '/connector-for-typesafe-jev.php' );
 
 require_once dirname( __DIR__ ) . '/includes/class-exception.php';
 require_once dirname( __DIR__ ) . '/includes/class-question.php';
 require_once dirname( __DIR__ ) . '/includes/class-response.php';
+require_once dirname( __DIR__ ) . '/includes/class-cache.php';
+require_once dirname( __DIR__ ) . '/includes/class-connector.php';
 require_once dirname( __DIR__ ) . '/includes/class-settings.php';
 require_once dirname( __DIR__ ) . '/includes/class-client.php';

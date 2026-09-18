@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/juanlentino/jev-connector
  * Description:       Connects WordPress to the TypeSafe System One API (Jev). Provides a PHP client, question builders, a REST proxy, and hooks so themes and plugins can ask typed questions and get structured, confidence-scored answers.
  * Version:           0.1.0
- * Requires at least: 6.4
+ * Requires at least: 7.0
  * Requires PHP:      7.4
  * Author:            Juan Lentino
  * Author URI:        https://juanlentino.com
@@ -28,6 +28,8 @@ const PLUGIN_FILE = __FILE__;
 require_once __DIR__ . '/includes/class-exception.php';
 require_once __DIR__ . '/includes/class-question.php';
 require_once __DIR__ . '/includes/class-response.php';
+require_once __DIR__ . '/includes/class-cache.php';
+require_once __DIR__ . '/includes/class-connector.php';
 require_once __DIR__ . '/includes/class-client.php';
 require_once __DIR__ . '/includes/class-settings.php';
 require_once __DIR__ . '/includes/class-rest-controller.php';
@@ -39,6 +41,7 @@ require_once __DIR__ . '/includes/functions.php';
  * @return void
  */
 function bootstrap(): void {
+	Connector::register();
 	Settings::instance()->register();
 	add_action(
 		'rest_api_init',

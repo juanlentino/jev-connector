@@ -1,8 +1,8 @@
 === Connector for TypeSafe Jev ===
 Contributors: juanlentino
 Tags: ai, classification, api, moderation, automation
-Requires at least: 6.4
-Tested up to: 6.9
+Requires at least: 7.0
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 0.1.0
 License: GPLv2 or later
@@ -22,10 +22,11 @@ Many questions can be sent in a single call and are evaluated in parallel.
 
 This plugin is a connector, not a feature. It ships no comment filter, no auto-tagger, no block editor panel. It gives you the plumbing to build those:
 
-* A settings screen for your API key, with an explicit switch for outbound requests.
+* Registration with the WordPress Connectors API, so your key is managed by core under **Settings → Connectors** and never by a field this plugin invented.
 * A PHP client with retry and backoff on rate-limit and overload responses.
 * Question builders that validate the shape before anything leaves your site.
 * A response reader with one accessor per answer type, plus a confidence gate.
+* Response caching keyed by request content, so re-evaluating identical material costs nothing.
 * A REST proxy at `/wp-json/jev/v1/ask` so admin-side JavaScript never sees your key.
 * Filters and actions at every point worth intercepting.
 
@@ -54,11 +55,11 @@ if ( ! is_wp_error( $answer ) && $answer->is_confident( 'route', 0.9 ) ) {
 
 == External services ==
 
-This plugin connects to the TypeSafe System One API, a third-party service operated by TypeSafe, to evaluate the content you pass to it.
+This plugin connects to the TypeSafe System One API, a third-party service operated by TypeSafe, to evaluate the content you pass to it. You supply your own API key.
 
 **What is sent:** the state you supply to `JevConnector\ask()` or to the REST route (which may include post content, comment text, or any other data your code passes), the questions you define, and your model identifier. Your API key is sent as a bearer token.
 
-**When it is sent:** only when your code calls the client or the REST route, and only after a site administrator has saved an API key and checked the box allowing outbound requests. No request is made on activation, on page load, or on any schedule.
+**When it is sent:** only when your own code calls the client or the REST route, and only once an administrator has connected TypeSafe under **Settings → Connectors**. No request is made on activation, on page load, or on any schedule. Identical repeat requests are served from a local cache rather than re-sent.
 
 **Where it goes:** `https://api.typesafe.ai/v1/systemone`
 
@@ -68,24 +69,30 @@ Documentation: https://docs.typesafe.ai
 == Installation ==
 
 1. Upload the plugin to `/wp-content/plugins/` and activate it.
-2. Go to **Settings → TypeSafe Jev**.
-3. Paste an API key from the TypeSafe console, tick **Allow this site to contact api.typesafe.ai**, and save.
+2. Go to **Settings → Connectors** and add your TypeSafe API key to the TypeSafe Jev card. Keys are available from the TypeSafe console.
+3. Optionally visit **Settings → TypeSafe Jev** to change the default model or the capability required by the REST route.
 
-To keep the key out of the database, define it in `wp-config.php` instead:
+To keep the key out of the database, set it in the environment or in `wp-config.php` instead. WordPress checks both before the stored value:
 
-`define( 'JEVC_API_KEY', 'your-key' );`
-
-A defined constant always wins over the stored value and implies consent to make requests.
+`define( 'TYPESAFE_API_KEY', 'your-key' );`
 
 == Frequently Asked Questions ==
 
 = Do I need a TypeSafe account? =
 
-Yes. The plugin is a client for a paid third-party API. Create a key at https://console.typesafe.ai/settings/keys.
+Yes. The plugin is a bring-your-own-key client for a third-party API. Create a key at https://console.typesafe.ai/settings/keys.
+
+= Why does this require WordPress 7.0? =
+
+Because key management is handled entirely by the Connectors API introduced in 7.0. Rather than ship a second, weaker credential field for older versions, the plugin targets the platform that does it properly.
+
+= Is this an AI provider for the core AI Client? =
+
+No, and deliberately so. The core AI Client covers generative capabilities: text, image, speech, video. Jev is not generative. It returns a probability, a choice, or a score with a confidence figure, none of which survive a generative interface. The plugin registers as a non-generative service connector, the same way a spam filter does.
 
 = Does anything get sent without my say-so? =
 
-No. Until an API key is present and outbound requests are switched on, every call returns a `jevc_not_configured` error and no HTTP request is made.
+No. Until a key is present, every call returns a `jevc_not_configured` error and no HTTP request is made.
 
 = Can I use this from the block editor? =
 
@@ -97,9 +104,9 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 
 = Which hooks are available? =
 
-`jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, and the actions `jevc_after_response` and `jevc_request_failed`.
+`jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, and the actions `jevc_after_response` and `jevc_request_failed`.
 
 == Changelog ==
 
 = 0.1.0 =
-* First release: client, question builders, response reader, settings screen, and REST proxy.
+* First release: Connectors API registration, client, question builders, response reader, response cache, and REST proxy.

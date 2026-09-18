@@ -11,11 +11,16 @@ part only you can do.
       check on every push.
 - [ ] **Confirm `Tested up to`** in `readme.txt` matches the WordPress version
       you actually tested against. Reviewers check this.
-- [ ] **Test the external-service path.** Save a key, tick the consent box,
-      make one call, then untick the box and confirm nothing goes out. The
-      "External services" section of `readme.txt` is the single most common
-      reason an API-backed plugin gets held in review, so make sure it
-      describes exactly what your build sends.
+- [ ] **Test the external-service path.** Connect TypeSafe under Settings →
+      Connectors, make one call, then remove the key and confirm nothing goes
+      out. The "External services" section of `readme.txt` is the single most
+      common reason an API-backed plugin gets held in review, so make sure it
+      describes exactly what your build sends. Connecting the service in core's
+      own UI is the implied consent guideline 7 describes, the same way Akismet
+      works, so there is no separate checkbox to defend.
+- [ ] **Confirm the connector card renders.** It should appear under Settings →
+      Connectors with its own type, not grouped with the AI providers, and
+      saving a key should not trigger AI Client validation.
 - [ ] **Build the zip**: push a `v0.1.0` tag, or run the Release workflow by
       hand, and download the artifact. Install that zip on a clean site.
 
