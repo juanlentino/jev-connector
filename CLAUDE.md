@@ -84,7 +84,8 @@ would mean two paths to keep in sync forever.
 ## Still unverified
 
 Plugin Check runs in CI against a live install, so static and readme checks
-are covered. What has not been exercised by a human on WordPress 7.x: whether
-the connector card renders under its own type rather than with the AI
-providers, and whether the term suggestions panel behaves in the block editor.
-Both were built by reading core source, not by testing.
+are covered. Seen working on a real WordPress 7.1 site (2026-09-18): the
+connector card renders under its own type, separate from the AI providers,
+and saving a key shows Connected rather than being wiped by AI Client
+validation. Not yet exercised by a human: the term suggestions panel in the
+block editor, and the comment guardrail against live comment traffic.

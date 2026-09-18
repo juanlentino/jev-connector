@@ -343,6 +343,17 @@ function admin_url( string $path = '' ): string {
 }
 
 /**
+ * Plugin URL stub.
+ *
+ * @param string $path   Path relative to the plugin folder.
+ * @param string $plugin A file inside the plugin folder.
+ * @return string
+ */
+function plugins_url( string $path = '', string $plugin = '' ): string {
+	return 'https://example.test/wp-content/plugins/' . basename( dirname( $plugin ) ) . '/' . ltrim( $path, '/' );
+}
+
+/**
  * Plugin basename stub.
  *
  * @param string $file Plugin file.
