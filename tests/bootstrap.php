@@ -373,6 +373,16 @@ function sanitize_text_field( string $value ): string {
 }
 
 /**
+ * Escaping stub.
+ *
+ * @param string $text Raw text.
+ * @return string
+ */
+function esc_html( string $text ): string {
+	return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8' );
+}
+
+/**
  * Tag stripper stub.
  *
  * @param string $value Raw value.

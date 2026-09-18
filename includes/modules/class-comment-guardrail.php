@@ -27,7 +27,7 @@ final class Comment_Guardrail extends Module {
 	/**
 	 * Decisions waiting to be written to comment meta, keyed by content hash.
 	 *
-	 * pre_comment_approved runs before the comment exists, so the audit trail
+	 * The pre_comment_approved filter runs before the comment exists, so the audit trail
 	 * is stashed here and written once there is an id to attach it to.
 	 *
 	 * @var array<string,array<string,mixed>>

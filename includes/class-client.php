@@ -162,9 +162,9 @@ final class Client {
 		 */
 		$request_args = (array) apply_filters( 'jevc_request_args', $request_args, $args );
 
-		$attempts     = max( 1, (int) $args['max_attempts'] );
-		$last_error   = null;
-		$attempt      = 0;
+		$attempts   = max( 1, (int) $args['max_attempts'] );
+		$last_error = null;
+		$attempt    = 0;
 
 		while ( $attempt < $attempts ) {
 			++$attempt;

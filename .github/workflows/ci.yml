@@ -13,10 +13,11 @@ jobs:
   test:
     name: PHPUnit (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v4
 
@@ -36,6 +37,7 @@ jobs:
   lint:
     name: WordPress Coding Standards
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 
@@ -55,10 +57,20 @@ jobs:
   plugin-check:
     name: WordPress Plugin Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+
+      # Plugin Check derives the slug from the directory name and scans every
+      # file in it, so it has to run against exactly what the zip will contain,
+      # in a folder named after the slug. Same staging as the Release workflow.
+      - name: Stage plugin files
+        run: |
+          SLUG=connector-for-typesafe-jev
+          mkdir -p build/$SLUG
+          rsync -a --exclude-from=.distignore ./ build/$SLUG/
 
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@v1
         with:
-          build-dir: './'
+          build-dir: './build/connector-for-typesafe-jev'

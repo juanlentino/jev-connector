@@ -3,7 +3,7 @@
  * Plugin Name:       Connector for TypeSafe Jev
  * Plugin URI:        https://github.com/juanlentino/jev-connector
  * Description:       Connects WordPress to the TypeSafe System One API (Jev). Provides a PHP client, question builders, a REST proxy, and hooks so themes and plugins can ask typed questions and get structured, confidence-scored answers.
- * Version:           0.2.0
+ * Version:           0.2.1
  * Requires at least: 7.0
  * Requires PHP:      7.4
  * Author:            Juan Lentino
@@ -11,7 +11,6 @@
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       connector-for-typesafe-jev
- * Domain Path:       /languages
  *
  * @package JevConnector
  */
@@ -22,7 +21,7 @@ namespace JevConnector;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION     = '0.2.0';
+const VERSION     = '0.2.1';
 const PLUGIN_FILE = __FILE__;
 
 require_once __DIR__ . '/includes/class-exception.php';

@@ -1,0 +1,22 @@
+# Everything listed here is left out of the distributable zip and out of the
+# Plugin Check run in CI. Format is rsync --exclude-from, one pattern per line.
+.git
+.github
+.claude
+.wordpress-org
+.gitignore
+.distignore
+.phpunit.result.cache
+.DS_Store
+build
+tests
+vendor
+node_modules
+composer.json
+composer.lock
+phpunit.xml.dist
+phpcs.xml.dist
+README.md
+CHANGELOG.md
+SUBMITTING.md
+CLAUDE.md

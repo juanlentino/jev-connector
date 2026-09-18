@@ -22,7 +22,7 @@ final class Question {
 	/**
 	 * Build a noul question: the probability that a statement is true.
 	 *
-	 * @param string                    $instructions The yes/no question to evaluate.
+	 * @param string                          $instructions The yes/no question to evaluate.
 	 * @param array<string,mixed>|string|null $criteria Optional extra context.
 	 * @return array<string,mixed>
 	 */
@@ -54,7 +54,7 @@ final class Question {
 	 *
 	 * Levels are numbered from 0 by their position in the array.
 	 *
-	 * @param string        $instructions The question to evaluate.
+	 * @param string            $instructions The question to evaluate.
 	 * @param array<int,string> $criteria Ordered level descriptions, 2 to 10 entries.
 	 * @return array<string,mixed>
 	 *
@@ -111,13 +111,13 @@ final class Question {
 
 			if ( ! is_array( $question ) || ! isset( $question['type'], $question['instructions'] ) ) {
 				throw new Exception(
-					sprintf( 'Question "%s" must have a type and instructions.', $id )
+					sprintf( 'Question "%s" must have a type and instructions.', esc_html( $id ) )
 				);
 			}
 
 			if ( ! in_array( $question['type'], array( 'noul', 'choice', 'score' ), true ) ) {
 				throw new Exception(
-					sprintf( 'Question "%s" has an unknown type "%s".', $id, (string) $question['type'] )
+					sprintf( 'Question "%s" has an unknown type "%s".', esc_html( $id ), esc_html( (string) $question['type'] ) )
 				);
 			}
 		}

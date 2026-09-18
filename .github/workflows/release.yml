@@ -13,6 +13,7 @@ jobs:
   zip:
     name: Build distributable zip
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 
@@ -20,23 +21,7 @@ jobs:
         run: |
           SLUG=connector-for-typesafe-jev
           mkdir -p build/$SLUG
-          rsync -a \
-            --exclude '.git' \
-            --exclude '.github' \
-            --exclude 'build' \
-            --exclude 'tests' \
-            --exclude 'vendor' \
-            --exclude 'node_modules' \
-            --exclude '.wordpress-org' \
-            --exclude 'composer.json' \
-            --exclude 'composer.lock' \
-            --exclude 'phpunit.xml.dist' \
-            --exclude 'phpcs.xml.dist' \
-            --exclude '.gitignore' \
-            --exclude 'README.md' \
-            --exclude 'CHANGELOG.md' \
-            --exclude 'SUBMITTING.md' \
-            ./ build/$SLUG/
+          rsync -a --exclude-from=.distignore ./ build/$SLUG/
           cd build && zip -rq $SLUG.zip $SLUG
 
       - name: Upload artifact
