@@ -352,6 +352,36 @@ function plugin_basename( string $file ): string {
 	return basename( dirname( $file ) ) . '/' . basename( $file );
 }
 
+/**
+ * Key sanitizer stub.
+ *
+ * @param string $key Raw key.
+ * @return string
+ */
+function sanitize_key( string $key ): string {
+	return strtolower( preg_replace( '/[^a-zA-Z0-9_\-]/', '', $key ) );
+}
+
+/**
+ * Text field sanitizer stub.
+ *
+ * @param string $value Raw value.
+ * @return string
+ */
+function sanitize_text_field( string $value ): string {
+	return trim( wp_strip_all_tags( $value ) );
+}
+
+/**
+ * Tag stripper stub.
+ *
+ * @param string $value Raw value.
+ * @return string
+ */
+function wp_strip_all_tags( string $value ): string {
+	return strip_tags( $value );
+}
+
 define( 'HOUR_IN_SECONDS', 3600 );
 define( 'JevConnector\\VERSION', '0.1.0' );
 define( 'JevConnector\\PLUGIN_FILE', dirname( __DIR__ ) . '/connector-for-typesafe-jev.php' );
@@ -363,3 +393,7 @@ require_once dirname( __DIR__ ) . '/includes/class-cache.php';
 require_once dirname( __DIR__ ) . '/includes/class-connector.php';
 require_once dirname( __DIR__ ) . '/includes/class-settings.php';
 require_once dirname( __DIR__ ) . '/includes/class-client.php';
+require_once dirname( __DIR__ ) . '/includes/modules/abstract-module.php';
+require_once dirname( __DIR__ ) . '/includes/modules/class-comment-guardrail.php';
+require_once dirname( __DIR__ ) . '/includes/modules/class-auto-tagger.php';
+require_once dirname( __DIR__ ) . '/includes/class-modules.php';

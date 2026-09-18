@@ -66,6 +66,7 @@ final class Settings {
 		return array(
 			'default_model'   => Client::DEFAULT_MODEL,
 			'rest_capability' => 'edit_posts',
+			'modules'         => array(),
 		);
 	}
 
@@ -163,6 +164,62 @@ final class Settings {
 			self::PAGE_SLUG,
 			'jevc_main'
 		);
+
+		add_settings_section(
+			'jevc_modules',
+			__( 'Modules', 'connector-for-typesafe-jev' ),
+			array( $this, 'render_modules_section' ),
+			self::PAGE_SLUG
+		);
+
+		foreach ( Modules::all() as $id => $module ) {
+			add_settings_field(
+				'jevc_module_' . $id,
+				esc_html( $module::label() ),
+				function () use ( $module ): void {
+					$this->render_module_field( $module );
+				},
+				self::PAGE_SLUG,
+				'jevc_modules'
+			);
+		}
+	}
+
+	/**
+	 * Modules section description.
+	 *
+	 * @return void
+	 */
+	public function render_modules_section(): void {
+		?>
+		<p>
+			<?php esc_html_e( 'Everything here is off until you switch it on, and each one costs an API call when it runs.', 'connector-for-typesafe-jev' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render one module's checkbox and, when enabled, its own fields.
+	 *
+	 * @param \JevConnector\Modules\Module $module The module.
+	 * @return void
+	 */
+	public function render_module_field( $module ): void {
+		$id      = $module::id();
+		$enabled = Modules::is_enabled( $id );
+		?>
+		<label>
+			<input type="checkbox" value="1"
+				name="<?php echo esc_attr( sprintf( '%s[modules][%s][enabled]', self::OPTION, $id ) ); ?>"
+				<?php checked( $enabled ); ?> />
+			<?php echo esc_html( $module::description() ); ?>
+		</label>
+		<?php if ( $enabled ) : ?>
+			<div style="margin-top:8px;padding-left:24px;">
+				<?php $module->render_fields(); ?>
+			</div>
+		<?php endif; ?>
+		<?php
 	}
 
 	/**
@@ -186,6 +243,7 @@ final class Settings {
 		return array(
 			'default_model'   => '' !== $model ? $model : $defaults['default_model'],
 			'rest_capability' => '' !== $capability ? $capability : $defaults['rest_capability'],
+			'modules'         => Modules::sanitize( $input['modules'] ?? array() ),
 		);
 	}
 

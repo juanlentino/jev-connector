@@ -124,6 +124,40 @@ await apiFetch( {
 
 `GET /wp-json/jev/v1/status` reports whether the connector is ready.
 
+## Modules
+
+Core is a library. Everything opinionated is a module, off by default, switched on with a checkbox under **Settings → TypeSafe Jev**. Nothing in the client depends on a module existing.
+
+### Comment guardrail
+
+Filters `pre_comment_approved` and asks two independent questions about the same comment: a `noul` on whether it is spam, and a `choice` on how a moderator should handle it.
+
+**Both have to agree before anything happens.** A comment is marked spam only when the choice says trash *and* the spam probability clears the threshold. It is approved only when the choice says approve *and* the spam probability is correspondingly low. Every other combination holds for moderation.
+
+That matters because the expensive failure here is not missing spam, it is throwing away a real comment from a real reader. So:
+
+- The worst verdict is `spam`, recoverable from the spam folder. It never returns `trash`.
+- Low confidence always lands on hold. Uncertainty is never read as permission.
+- A `WP_Error` from the API returns whatever status WordPress already decided. An outage must not silently change how a site moderates.
+- Every decision is written to comment meta as `_jevc_decision` with probabilities, confidence and model, so you can tune thresholds against your own traffic rather than guessing.
+
+```php
+add_filter( 'jevc_guardrail_decision', function ( $decision, $response, $commentdata ) {
+    // Hold everything on a post you are watching, whatever Jev thinks.
+    return 42 === (int) $commentdata['comment_post_ID'] ? 0 : $decision;
+}, 10, 3 );
+```
+
+Defaults: spam 0.95, approve 0.90, and logged-in users who can edit posts skip evaluation entirely.
+
+### Term suggestions
+
+Adds a panel to the post editor. Click **Suggest terms** and it fans out one `noul` per existing term in the taxonomy, all in a single call, then lists what clears your threshold with a probability each.
+
+It suggests. It does not apply. Terms are written only when an editor ticks them and clicks Apply, through a REST route gated on `edit_post` for that specific post. Nothing hooks `save_post`, because autosaves, revisions and REST writes all fire it and you would pay three times to tag once.
+
+It draws from terms that already exist and never invents new ones, which keeps a taxonomy from sprawling. Capped at 40 candidates per call.
+
 ## Hooks
 
 | Hook | Type | Purpose |
@@ -137,8 +171,12 @@ await apiFetch( {
 | `jevc_cache_ttl` | filter | Response cache lifetime; return 0 to disable |
 | `jevc_connector_type` | filter | Connector type used to group the card |
 | `jevc_connector_args` | filter | The whole connector definition before registration |
+| `jevc_modules` | filter | The list of module classes |
+| `jevc_guardrail_decision` | filter | The guardrail's verdict before it is applied |
+| `jevc_guardrail_state` | filter | What gets sent about a comment |
 | `jevc_after_response` | action | Fires with the `Response` on success |
 | `jevc_request_failed` | action | Fires with the `WP_Error` on final failure |
+| `jevc_guardrail_unavailable` | action | Fires when the guardrail could not reach TypeSafe |
 
 ## Caching
 

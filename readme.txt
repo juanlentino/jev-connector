@@ -4,7 +4,7 @@ Tags: ai, classification, api, moderation, automation
 Requires at least: 7.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ Most AI plugins hand you a paragraph of prose and leave you to parse it. This on
 
 Many questions can be sent in a single call and are evaluated in parallel.
 
-This plugin is a connector, not a feature. It ships no comment filter, no auto-tagger, no block editor panel. It gives you the plumbing to build those:
+At its core this is a connector, not a feature. The plumbing comes first:
 
 * Registration with the WordPress Connectors API, so your key is managed by core under **Settings → Connectors** and never by a field this plugin invented.
 * A PHP client with retry and backoff on rate-limit and overload responses.
@@ -29,6 +29,12 @@ This plugin is a connector, not a feature. It ships no comment filter, no auto-t
 * Response caching keyed by request content, so re-evaluating identical material costs nothing.
 * A REST proxy at `/wp-json/jev/v1/ask` so admin-side JavaScript never sees your key.
 * Filters and actions at every point worth intercepting.
+
+= Optional modules =
+
+**Comment guardrail.** Routes incoming comments to approve, hold, or spam. Two independent questions have to agree before anything is called spam, the worst verdict it will issue is recoverable from the spam folder, and it never returns trash. Anything it is unsure about is held for a human. Every decision is written to comment meta with its probabilities, so you can tune the thresholds against your own traffic instead of guessing. If TypeSafe is unreachable, the comment keeps whatever status WordPress already gave it.
+
+**Term suggestions.** Adds a panel to the post editor that asks one question per existing term, all in a single call, and lists the ones that clear your threshold with a probability each. It suggests only. Nothing is written until you tick a term and click Apply, and it never hooks `save_post`.
 
 = Example =
 
@@ -59,7 +65,7 @@ This plugin connects to the TypeSafe System One API, a third-party service opera
 
 **What is sent:** the state you supply to `JevConnector\ask()` or to the REST route (which may include post content, comment text, or any other data your code passes), the questions you define, and your model identifier. Your API key is sent as a bearer token.
 
-**When it is sent:** only when your own code calls the client or the REST route, and only once an administrator has connected TypeSafe under **Settings → Connectors**. No request is made on activation, on page load, or on any schedule. Identical repeat requests are served from a local cache rather than re-sent.
+**When it is sent:** only when your own code calls the client or the REST route, or when a module you have switched on runs. The comment guardrail sends a comment's text when that comment is submitted; the term suggestions panel sends a post's title and body when an editor clicks Suggest terms. Both are off by default. Nothing is sent until an administrator has connected TypeSafe under **Settings → Connectors**, and no request is made on activation, on page load, or on any schedule. Identical repeat requests are served from a local cache rather than re-sent.
 
 **Where it goes:** `https://api.typesafe.ai/v1/systemone`
 
@@ -90,6 +96,10 @@ Because key management is handled entirely by the Connectors API introduced in 7
 
 No, and deliberately so. The core AI Client covers generative capabilities: text, image, speech, video. Jev is not generative. It returns a probability, a choice, or a score with a confidence figure, none of which survive a generative interface. The plugin registers as a non-generative service connector, the same way a spam filter does.
 
+= Will the comment guardrail delete anything? =
+
+No. The worst it does is mark a comment as spam, which you can undo from the spam folder, and it only does that when two separate questions agree at high confidence. Everything else is held for moderation. It never returns trash, and an API outage leaves moderation exactly as WordPress decided.
+
 = Does anything get sent without my say-so? =
 
 No. Until a key is present, every call returns a `jevc_not_configured` error and no HTTP request is made.
@@ -104,9 +114,14 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 
 = Which hooks are available? =
 
-`jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, and the actions `jevc_after_response` and `jevc_request_failed`.
+Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, `jevc_modules`, `jevc_guardrail_decision`, `jevc_guardrail_state`. Actions: `jevc_after_response`, `jevc_request_failed`, `jevc_guardrail_unavailable`.
 
 == Changelog ==
+
+= 0.2.0 =
+* Added an optional comment guardrail module: two-question agreement, hold as the fallback, decisions logged to comment meta.
+* Added an optional term suggestions module: one question per existing term in a single call, suggest-only.
+* Both modules are off by default and can be switched on under Settings → TypeSafe Jev.
 
 = 0.1.0 =
 * First release: Connectors API registration, client, question builders, response reader, response cache, and REST proxy.

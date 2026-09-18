@@ -21,17 +21,38 @@ part only you can do.
 - [ ] **Confirm the connector card renders.** It should appear under Settings →
       Connectors with its own type, not grouped with the AI providers, and
       saving a key should not trigger AI Client validation.
-- [ ] **Build the zip**: push a `v0.1.0` tag, or run the Release workflow by
+- [ ] **Build the zip**: push a `v0.2.0` tag, or run the Release workflow by
       hand, and download the artifact. Install that zip on a clean site.
+
+## The four things that get plugins rejected
+
+The directory names these as the most common blockers, and all four are worth
+one last grep before you upload:
+
+1. **Unescaped output.** Every echo goes through `esc_html`, `esc_attr` or
+   `esc_url`.
+2. **Unsanitized input.** Every `$_POST`/`$_GET`/REST value is sanitized before
+   use.
+3. **Missing nonces.** Form handling needs one. The Settings API supplies its
+   own, and REST routes use the cookie nonce that `apiFetch` sends plus a
+   `permission_callback`, so the plugin is covered. Do not add a route later
+   without one.
+4. **Guideline non-compliance.** Mostly the external-services disclosure for a
+   plugin like this one.
 
 ## Submit
 
 1. Sign in at https://wordpress.org/plugins/developers/add/ with your
    WordPress.org account.
 2. Upload `connector-for-typesafe-jev.zip`.
-3. Wait. Initial review currently runs anywhere from a few days to a few weeks.
-   You get one email thread with a reviewer; reply in that thread rather than
-   resubmitting.
+3. Wait. Review takes 1 to 10 days, and they aim for 5 business days. It cannot
+   be expedited, so do not ask. You get one email thread with a reviewer; reply
+   in that thread rather than resubmitting.
+
+**The slug is set by the `Plugin Name:` header and cannot be changed after
+approval.** Before review begins you may get one chance to change it in the UI;
+once it is under review, only plugins@wordpress.org can change it. So check the
+header reads exactly `Connector for TypeSafe Jev` before you upload.
 
 ## About the name
 
