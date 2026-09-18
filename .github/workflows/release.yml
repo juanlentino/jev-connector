@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    name: Build distributable zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stage plugin files
+        run: |
+          SLUG=connector-for-typesafe-jev
+          mkdir -p build/$SLUG
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'build' \
+            --exclude 'tests' \
+            --exclude 'vendor' \
+            --exclude 'node_modules' \
+            --exclude '.wordpress-org' \
+            --exclude 'composer.json' \
+            --exclude 'composer.lock' \
+            --exclude 'phpunit.xml.dist' \
+            --exclude 'phpcs.xml.dist' \
+            --exclude '.gitignore' \
+            --exclude 'README.md' \
+            --exclude 'CHANGELOG.md' \
+            --exclude 'SUBMITTING.md' \
+            ./ build/$SLUG/
+          cd build && zip -rq $SLUG.zip $SLUG
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: connector-for-typesafe-jev
+          path: build/connector-for-typesafe-jev.zip
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/connector-for-typesafe-jev.zip
+          generate_release_notes: true
