@@ -19,4 +19,7 @@ phpcs.xml.dist
 README.md
 CHANGELOG.md
 SUBMITTING.md
+CONTRIBUTING.md
+SECURITY.md
 CLAUDE.md
+docs

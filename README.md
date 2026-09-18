@@ -1,8 +1,22 @@
 # Connector for TypeSafe Jev
 
-A WordPress connector for the [TypeSafe](https://docs.typesafe.ai) System One API. It gives your themes and plugins a typed way to ask questions about content and get back values you can branch on — a probability, a named choice, or a score — each with a confidence figure.
+[![CI](https://github.com/juanlentino/jev-connector/actions/workflows/ci.yml/badge.svg)](https://github.com/juanlentino/jev-connector/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/juanlentino/jev-connector?label=release)](https://github.com/juanlentino/jev-connector/releases/latest)
+[![WordPress 7.0+](https://img.shields.io/badge/WordPress-7.0%2B-21759b)](https://wordpress.org/download/)
+[![PHP 7.4+](https://img.shields.io/badge/PHP-7.4%2B-777bb4)](https://www.php.net/supported-versions.php)
+[![License: GPL-2.0-or-later](https://img.shields.io/badge/license-GPL--2.0--or--later-blue)](LICENSE)
+
+A WordPress connector for the [TypeSafe](https://docs.typesafe.ai) System One API. It gives your themes and plugins a typed way to ask questions about content and get back values you can branch on: a probability, a named choice, or a score, each with a confidence figure.
 
 No prose parsing. No prompt wrangling in your template files.
+
+**Status:** 0.x, pending review for the WordPress plugin directory. The public API may still move before 1.0; changes are recorded in [CHANGELOG.md](CHANGELOG.md).
+
+## Requirements
+
+- WordPress 7.0 or later (the key is managed by core's Connectors API; there is no fallback field)
+- PHP 7.4 or later
+- A TypeSafe API key from the [console](https://console.typesafe.ai/settings/keys)
 
 ## Why typed answers
 
@@ -107,6 +121,8 @@ For a `noul`, `is_confident()` measures distance from 0.5, so 0.97 and 0.03 are 
 
 ## REST
 
+Full reference, including the term-suggestion routes and every error code, in [docs/REST-API.md](docs/REST-API.md).
+
 `POST /wp-json/jev/v1/ask` — same payload shape as the PHP helper. Requires a logged-in user with `edit_posts` by default.
 
 ```js
@@ -125,6 +141,8 @@ await apiFetch( {
 `GET /wp-json/jev/v1/status` reports whether the connector is ready.
 
 ## Modules
+
+The module contract, the guardrail's decision matrix, and how to write your own are in [docs/MODULES.md](docs/MODULES.md).
 
 Core is a library. Everything opinionated is a module, off by default, switched on with a checkbox under **Settings → TypeSafe Jev**. Nothing in the client depends on a module existing.
 
@@ -159,6 +177,8 @@ It suggests. It does not apply. Terms are written only when an editor ticks them
 It draws from terms that already exist and never invents new ones, which keeps a taxonomy from sprawling. Capped at 40 candidates per call.
 
 ## Hooks
+
+Full signatures and firing order are in [docs/HOOKS.md](docs/HOOKS.md).
 
 | Hook | Type | Purpose |
 | --- | --- | --- |
@@ -195,9 +215,17 @@ Everything returns `WP_Error` rather than throwing. Codes: `jevc_not_configured`
 
 ```bash
 composer install
-composer test   # PHPUnit
-composer lint   # WordPress Coding Standards
+composer check  # lint + tests
 ```
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): setup, what CI runs, how to make a change
+- [CLAUDE.md](CLAUDE.md): the design decisions that must not be quietly reversed, with reasons
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): file map and the request path end to end
+- [docs/RELEASING.md](docs/RELEASING.md): version bump, tag, zip, and the directory's SVN
+- [SECURITY.md](SECURITY.md): what is sent where, and how to report a vulnerability
+- [SUBMITTING.md](SUBMITTING.md): the pre-submission checklist for the plugin directory
+
+`main` is protected. Every change goes through a pull request with PHPUnit on PHP 7.4 to 8.5, WordPress Coding Standards, and the directory's own Plugin Check all green.
 
 ## License
 

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security issue
+    url: https://github.com/juanlentino/jev-connector/security/advisories/new
+    about: Report privately. Please do not open a public issue for a vulnerability.
+  - name: TypeSafe API questions
+    url: https://docs.typesafe.ai
+    about: Questions about the System One API itself, models, pricing or keys belong with TypeSafe, not this client.

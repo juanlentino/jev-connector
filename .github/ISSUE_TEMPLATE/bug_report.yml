@@ -1,0 +1,45 @@
+name: Bug report
+description: Something the plugin does that it should not, or does not do that it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got. Include the `WP_Error` code if there was one (`jevc_...`).
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: "Plugin 0.2.2, WordPress 7.1.1, PHP 8.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Client / ask()
+        - Connectors card / API key
+        - REST routes
+        - Comment guardrail
+        - Term suggestions
+        - Settings screen
+        - Packaging / CI
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Minimal reproduction
+      description: The smallest `ask()` call or steps that show it. Redact your key and any private content.
+      render: php
+  - type: checkboxes
+    id: read
+    attributes:
+      label: Before filing
+      options:
+        - label: I checked that the behaviour is not one of the documented decisions in CLAUDE.md (for example, the guardrail holding on low confidence is by design)
