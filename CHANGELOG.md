@@ -4,6 +4,40 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 0.x versioning until the public API is frozen at 1.0.
 
+## [0.2.1] - 2026-09-18
+
+Directory readiness. No behaviour change.
+
+### Fixed
+
+- Caller-supplied question ids are escaped before they are interpolated into
+  validation messages (`WordPress.Security.EscapeOutput.ExceptionNotEscaped`,
+  flagged by both PHPCS and Plugin Check).
+- Removed the `Domain Path` header. It pointed at a `languages/` folder that
+  does not exist, which Plugin Check flags, and wordpress.org serves language
+  packs without it.
+- `Tested up to` raised to 7.1, the current WordPress release. Plugin Check
+  rejects a value behind the current major.
+- The External services section of `readme.txt` now discloses that the
+  User-Agent header carries the plugin version and the site's home URL, which
+  the client has always sent.
+- Renamed a `$default` parameter in `Module::setting()`; `default` is a
+  reserved word and WPCS warns on it.
+
+### Changed
+
+- `.distignore` is now the single source of truth for what ships. The Release
+  workflow builds the zip from it, and CI stages the same set into a folder
+  named `connector-for-typesafe-jev` before running Plugin Check. Previously
+  Plugin Check scanned the raw checkout, derived the slug `jev-connector` from
+  the repo folder, and reported 58 false text-domain mismatches plus findings
+  in test and tooling files that never ship. CI had been red on every push.
+- PHPCS: the WordPress ruleset no longer applies to `tests/`, whose bootstrap
+  must redeclare core function names as stubs. PHPCompatibility still does.
+  `minimum_wp_version` now matches the plugin header. Array properties use the
+  `<element>` syntax PHPCS 4 requires.
+- CI: every job has a `timeout-minutes`; the PHPUnit matrix adds 8.5.
+
 ## [0.2.0] - 2026-09-18
 
 ### Added

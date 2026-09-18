@@ -67,16 +67,24 @@ would mean two paths to keep in sync forever.
 ## Before shipping
 
 - `composer test` and `composer lint` must pass.
-- Run Plugin Check against a real install. Unescaped output, unsanitized input
-  and missing nonces are the directory's top three rejection reasons.
+- CI runs Plugin Check against a real WordPress install, on the staged file
+  set in a folder named after the slug. **It must stay that way.** Pointing it
+  at the raw checkout makes it derive the slug from the repo folder name
+  (`jev-connector`) and report every `__()` call as a text-domain mismatch.
+  Unescaped output, unsanitized input and missing nonces are the directory's
+  top three rejection reasons.
+- `.distignore` defines what ships. Adding a dev file to the root means adding
+  it there too, or Plugin Check will flag it.
 - `readme.txt` has an `== External services ==` section. If you add a code path
   that sends anything anywhere, update it in the same commit.
-- Bump `Version:` in the plugin header and `Stable tag:` in `readme.txt`
-  together. The directory serves whatever `Stable tag` points at.
+- Bump `Version:` in the plugin header, `const VERSION`, and `Stable tag:` in
+  `readme.txt` together. The directory serves whatever `Stable tag` points at.
+- `Tested up to` must be the current WordPress release or Plugin Check fails.
 
 ## Still unverified
 
-Nothing has been run against a live WordPress 7.0. Specifically: whether the
-connector card renders under its own type rather than with the AI providers,
-and whether the term suggestions panel behaves in the block editor. Both were
-built by reading core source, not by testing.
+Plugin Check runs in CI against a live install, so static and readme checks
+are covered. What has not been exercised by a human on WordPress 7.x: whether
+the connector card renders under its own type rather than with the AI
+providers, and whether the term suggestions panel behaves in the block editor.
+Both were built by reading core source, not by testing.

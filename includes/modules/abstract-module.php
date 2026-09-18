@@ -91,13 +91,13 @@ abstract class Module {
 	 * Read one setting.
 	 *
 	 * @param string $key     Setting key.
-	 * @param mixed  $default Fallback when unset.
+	 * @param mixed  $fallback Value when unset.
 	 * @return mixed
 	 */
-	protected function setting( string $key, $default = null ) {
+	protected function setting( string $key, $fallback = null ) {
 		$settings = $this->settings();
 
-		return array_key_exists( $key, $settings ) ? $settings[ $key ] : $default;
+		return array_key_exists( $key, $settings ) ? $settings[ $key ] : $fallback;
 	}
 
 	/**

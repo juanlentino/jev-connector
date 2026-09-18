@@ -5,12 +5,17 @@ part only you can do.
 
 ## Before you submit
 
-- [ ] **Run Plugin Check locally.** Install the [Plugin Check](https://wordpress.org/plugins/plugin-check/)
-      plugin on a test site, run it against this plugin, and clear every error.
-      Warnings are worth reading but rarely block approval. CI runs the same
-      check on every push.
-- [ ] **Confirm `Tested up to`** in `readme.txt` matches the WordPress version
-      you actually tested against. Reviewers check this.
+- [ ] **Check CI is green on `main`.** The Plugin Check job runs the same
+      [Plugin Check](https://wordpress.org/plugins/plugin-check/) the reviewers
+      do, against the exact file set the zip contains, in a folder named after
+      the slug. It has to run that way: Plugin Check derives the slug from the
+      directory name and scans everything in it, so pointing it at the raw
+      checkout produces dozens of false text-domain errors. What ships is
+      defined once, in `.distignore`.
+- [ ] **Confirm `Tested up to`** in `readme.txt` is the current WordPress
+      release (check `https://api.wordpress.org/core/version-check/1.7/`).
+      Plugin Check rejects a value behind the current major, and reviewers
+      check it too.
 - [ ] **Test the external-service path.** Connect TypeSafe under Settings →
       Connectors, make one call, then remove the key and confirm nothing goes
       out. The "External services" section of `readme.txt` is the single most
@@ -21,7 +26,7 @@ part only you can do.
 - [ ] **Confirm the connector card renders.** It should appear under Settings →
       Connectors with its own type, not grouped with the AI providers, and
       saving a key should not trigger AI Client validation.
-- [ ] **Build the zip**: push a `v0.2.0` tag, or run the Release workflow by
+- [ ] **Build the zip**: push a `v0.2.1` tag, or run the Release workflow by
       hand, and download the artifact. Install that zip on a clean site.
 
 ## The four things that get plugins rejected
@@ -76,10 +81,14 @@ You get SVN access at `https://plugins.svn.wordpress.org/connector-for-typesafe-
 ```bash
 svn co https://plugins.svn.wordpress.org/connector-for-typesafe-jev/ svn-plugin
 cd svn-plugin
-# copy plugin files into trunk/, assets into assets/
-svn cp trunk tags/0.1.0
-svn ci -m "Release 0.1.0"
+# unzip the release artifact into trunk/, put .wordpress-org/ images into assets/
+svn cp trunk tags/0.2.1
+svn ci -m "Release 0.2.1"
 ```
+
+The `.wordpress-org/` folder currently holds only a README describing the
+icon, banner and screenshot sizes; no images exist yet. They are optional for
+submission and can be added to `assets/` any time after approval.
 
 `Stable tag` in `readme.txt` is what the directory actually serves. Bump it and
 the version header together, every release. SVN is a release repository, not a

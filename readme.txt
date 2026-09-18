@@ -2,9 +2,9 @@
 Contributors: juanlentino
 Tags: ai, classification, api, moderation, automation
 Requires at least: 7.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,7 +63,7 @@ if ( ! is_wp_error( $answer ) && $answer->is_confident( 'route', 0.9 ) ) {
 
 This plugin connects to the TypeSafe System One API, a third-party service operated by TypeSafe, to evaluate the content you pass to it. You supply your own API key.
 
-**What is sent:** the state you supply to `JevConnector\ask()` or to the REST route (which may include post content, comment text, or any other data your code passes), the questions you define, and your model identifier. Your API key is sent as a bearer token.
+**What is sent:** the state you supply to `JevConnector\ask()` or to the REST route (which may include post content, comment text, or any other data your code passes), the questions you define, and your model identifier. Your API key is sent as a bearer token, and the request's User-Agent header identifies this plugin, its version, and your site's home URL.
 
 **When it is sent:** only when your own code calls the client or the REST route, or when a module you have switched on runs. The comment guardrail sends a comment's text when that comment is submitted; the term suggestions panel sends a post's title and body when an editor clicks Suggest terms. Both are off by default. Nothing is sent until an administrator has connected TypeSafe under **Settings → Connectors**, and no request is made on activation, on page load, or on any schedule. Identical repeat requests are served from a local cache rather than re-sent.
 
@@ -117,6 +117,10 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, `jevc_modules`, `jevc_guardrail_decision`, `jevc_guardrail_state`. Actions: `jevc_after_response`, `jevc_request_failed`, `jevc_guardrail_unavailable`.
 
 == Changelog ==
+
+= 0.2.1 =
+* Directory readiness: escaped caller-supplied ids in validation messages, removed the unused Domain Path header, and marked the plugin tested up to WordPress 7.1.
+* The External services disclosure now mentions the site URL sent in the User-Agent header.
 
 = 0.2.0 =
 * Added an optional comment guardrail module: two-question agreement, hold as the fallback, decisions logged to comment meta.

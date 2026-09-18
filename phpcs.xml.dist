@@ -12,29 +12,36 @@
 	<arg name="colors"/>
 	<arg value="ps"/>
 
-	<config name="minimum_wp_version" value="6.4"/>
+	<config name="minimum_wp_version" value="7.0"/>
 	<config name="testVersion" value="7.4-"/>
 
 	<rule ref="WordPress">
 		<!-- The plugin uses namespaces rather than a function prefix. -->
 		<exclude name="WordPress.Files.FileName"/>
+		<!--
+			tests/bootstrap.php stubs core functions under their real names so
+			the suite runs without WordPress. It never ships, so the WordPress
+			ruleset does not apply to it; PHPCompatibility still does.
+		-->
+		<exclude-pattern>/tests/*</exclude-pattern>
 	</rule>
 
 	<rule ref="PHPCompatibilityWP"/>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="connector-for-typesafe-jev"/>
+			<property name="text_domain" type="array">
+				<element value="connector-for-typesafe-jev"/>
+			</property>
 		</properties>
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
-			<property name="prefixes" type="array" value="jevc,JevConnector"/>
+			<property name="prefixes" type="array">
+				<element value="jevc"/>
+				<element value="JevConnector"/>
+			</property>
 		</properties>
-	</rule>
-
-	<rule ref="WordPress.WP.AlternativeFunctions.json_encode_json_encode">
-		<exclude-pattern>/tests/*</exclude-pattern>
 	</rule>
 </ruleset>
