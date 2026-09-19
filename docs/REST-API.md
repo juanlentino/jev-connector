@@ -6,8 +6,7 @@ application password. The API key never leaves the server.
 
 ## `POST /wp-json/jev/v1/ask`
 
-Capability: the settings screen's **REST capability** (default `edit_posts`),
-filterable with `jevc_rest_capability`.
+Capability: `edit_posts` by default, filterable with `jevc_rest_capability`.
 
 | Param | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -63,23 +62,6 @@ same either way.
 Same capability. Returns `{ "ready": bool, "model": string, "version": string }`.
 `ready` is whether a key resolves; it makes no request.
 
-## Term-suggestion routes
-
-Registered only when the **Term suggestions** module is switched on.
-Capability: `edit_post` for the specific `post_id`.
-
-### `POST /wp-json/jev/v1/suggest-terms`
-
-`{ "post_id": int }` → `{ "suggestions": [ { "term_id", "name", "probability" } ] }`,
-most likely first, only those at or above the module's threshold. At most 40
-terms are asked about, ordered by use. It never creates a term.
-
-### `POST /wp-json/jev/v1/apply-terms`
-
-`{ "post_id": int, "term_ids": int[] }` → `{ "applied": int[], "taxonomy": string }`.
-Appends the terms to the post (existing terms are kept). This is the only
-route that writes.
-
 ## Error codes
 
 Errors come back in the standard WordPress shape:
@@ -94,9 +76,6 @@ Errors come back in the standard WordPress shape:
 | `jevc_invalid_response` | 400 | TypeSafe returned something that was not JSON |
 | `jevc_http_<status>` | the API's status | TypeSafe rejected the call. `data.detail` holds the decoded body |
 | `jevc_request_failed` | 400 | Transport failure after retries |
-| `jevc_no_post` | 404 | `post_id` does not exist (suggest-terms) |
-| `jevc_no_terms` | 400 | Empty `term_ids` (apply-terms) |
 
 `429`, `529`, `500`, `502`, `503` and `504` from TypeSafe are retried up to
-three times with backoff before surfacing as `jevc_http_<status>`. On the
-suggest-terms route any client error is returned with HTTP `502`.
+three times with backoff before surfacing as `jevc_http_<status>`.

@@ -16,7 +16,8 @@ defined( 'ABSPATH' ) || exit;
  */
 final class REST_Controller {
 
-	public const NAMESPACE_V1 = 'jev/v1';
+	public const NAMESPACE_V1       = 'jev/v1';
+	public const DEFAULT_CAPABILITY = 'edit_posts';
 
 	/**
 	 * Register the routes.
@@ -73,9 +74,9 @@ final class REST_Controller {
 		/**
 		 * Filters the capability required to use the REST proxy.
 		 *
-		 * @param string $capability Capability name.
+		 * @param string $capability Capability name. Default 'edit_posts'.
 		 */
-		$capability = (string) apply_filters( 'jevc_rest_capability', Settings::rest_capability() );
+		$capability = (string) apply_filters( 'jevc_rest_capability', self::DEFAULT_CAPABILITY );
 
 		return current_user_can( $capability );
 	}
@@ -126,12 +127,10 @@ final class REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function status(): \WP_REST_Response {
-		$settings = Settings::all();
-
 		return rest_ensure_response(
 			array(
 				'ready'   => is_ready(),
-				'model'   => (string) $settings['default_model'],
+				'model'   => (string) apply_filters( 'jevc_default_model', Client::DEFAULT_MODEL ),
 				'version' => VERSION,
 			)
 		);

@@ -12,7 +12,7 @@ Required sizes:
 | `icon-256x256.png` | 256 × 256 | Retina |
 | `banner-772x250.png` | 772 × 250 | Plugin page header |
 | `banner-1544x500.png` | 1544 × 500 | Retina |
-| `screenshot-1.png` | any | Settings screen; caption comes from readme.txt |
+| `screenshot-1.png` | any | The card on Settings → Connectors; caption comes from readme.txt |
 
 Use PNG or JPG. An `icon.svg` may be supplied instead of the PNG icons, but a
 256px PNG fallback is still a good idea.

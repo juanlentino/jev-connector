@@ -52,6 +52,17 @@ Go to **Settings → Connectors**, find the TypeSafe Jev card, and paste a key f
 
 Nothing is sent to TypeSafe until a key resolves, and then only when your own code makes a call.
 
+### No screens of its own
+
+Like the Anthropic and Google provider connectors, this plugin adds no menu. The card is the whole UI. The default model and the REST capability are code-level choices:
+
+```php
+add_filter( 'jevc_default_model', fn() => 'jev-1.13' );
+add_filter( 'jevc_rest_capability', fn() => 'manage_options' );
+```
+
+What a site does with an answer (moderate a comment, tag a post, grade a draft) belongs to the plugin or theme that owns that content. [Signal & Noise Tools](https://github.com/juanlentino/signal-and-noise-tools) is the first consumer built that way.
+
 ### Not an AI provider, on purpose
 
 The core AI Client is generative: text, image, speech, video. Jev is not. It returns a probability, a choice, or a score with a confidence figure, and routing that through `generate_text()` throws away everything worth having. Core also special-cases `type => 'ai_provider'` by validating those keys against the AI Client and clearing the ones it cannot verify, which would quietly wipe a working Jev key.
@@ -121,9 +132,9 @@ For a `noul`, `is_confident()` measures distance from 0.5, so 0.97 and 0.03 are 
 
 ## REST
 
-Full reference, including the term-suggestion routes and every error code, in [docs/REST-API.md](docs/REST-API.md).
+Full reference, with every error code, in [docs/REST-API.md](docs/REST-API.md).
 
-`POST /wp-json/jev/v1/ask` — same payload shape as the PHP helper. Requires a logged-in user with `edit_posts` by default.
+`POST /wp-json/jev/v1/ask` — same payload shape as the PHP helper. Requires a logged-in user with `edit_posts` by default (`jevc_rest_capability` filter).
 
 ```js
 await apiFetch( {
@@ -140,49 +151,13 @@ await apiFetch( {
 
 `GET /wp-json/jev/v1/status` reports whether the connector is ready.
 
-## Modules
-
-The module contract, the guardrail's decision matrix, and how to write your own are in [docs/MODULES.md](docs/MODULES.md).
-
-Core is a library. Everything opinionated is a module, off by default, switched on with a checkbox under **Settings → TypeSafe Jev**. Nothing in the client depends on a module existing.
-
-### Comment guardrail
-
-Filters `pre_comment_approved` and asks two independent questions about the same comment: a `noul` on whether it is spam, and a `choice` on how a moderator should handle it.
-
-**Both have to agree before anything happens.** A comment is marked spam only when the choice says trash *and* the spam probability clears the threshold. It is approved only when the choice says approve *and* the spam probability is correspondingly low. Every other combination holds for moderation.
-
-That matters because the expensive failure here is not missing spam, it is throwing away a real comment from a real reader. So:
-
-- The worst verdict is `spam`, recoverable from the spam folder. It never returns `trash`.
-- Low confidence always lands on hold. Uncertainty is never read as permission.
-- A `WP_Error` from the API returns whatever status WordPress already decided. An outage must not silently change how a site moderates.
-- Every decision is written to comment meta as `_jevc_decision` with probabilities, confidence and model, so you can tune thresholds against your own traffic rather than guessing.
-
-```php
-add_filter( 'jevc_guardrail_decision', function ( $decision, $response, $commentdata ) {
-    // Hold everything on a post you are watching, whatever Jev thinks.
-    return 42 === (int) $commentdata['comment_post_ID'] ? 0 : $decision;
-}, 10, 3 );
-```
-
-Defaults: spam 0.95, approve 0.90, and logged-in users who can edit posts skip evaluation entirely.
-
-### Term suggestions
-
-Adds a panel to the post editor. Click **Suggest terms** and it fans out one `noul` per existing term in the taxonomy, all in a single call, then lists what clears your threshold with a probability each.
-
-It suggests. It does not apply. Terms are written only when an editor ticks them and clicks Apply, through a REST route gated on `edit_post` for that specific post. Nothing hooks `save_post`, because autosaves, revisions and REST writes all fire it and you would pay three times to tag once.
-
-It draws from terms that already exist and never invents new ones, which keeps a taxonomy from sprawling. Capped at 40 candidates per call.
-
 ## Hooks
 
 Full signatures and firing order are in [docs/HOOKS.md](docs/HOOKS.md).
 
 | Hook | Type | Purpose |
 | --- | --- | --- |
-| `jevc_default_model` | filter | Change the model identifier |
+| `jevc_default_model` | filter | The model id when a call passes none (default `jev-latest`) |
 | `jevc_http_timeout` | filter | Request timeout in seconds (default 20) |
 | `jevc_request_payload` | filter | Last look at the body before encoding |
 | `jevc_request_args` | filter | Arguments handed to `wp_remote_post()` |
@@ -191,12 +166,8 @@ Full signatures and firing order are in [docs/HOOKS.md](docs/HOOKS.md).
 | `jevc_cache_ttl` | filter | Response cache lifetime; return 0 to disable |
 | `jevc_connector_type` | filter | Connector type used to group the card |
 | `jevc_connector_args` | filter | The whole connector definition before registration |
-| `jevc_modules` | filter | The list of module classes |
-| `jevc_guardrail_decision` | filter | The guardrail's verdict before it is applied |
-| `jevc_guardrail_state` | filter | What gets sent about a comment |
 | `jevc_after_response` | action | Fires with the `Response` on success |
 | `jevc_request_failed` | action | Fires with the `WP_Error` on final failure |
-| `jevc_guardrail_unavailable` | action | Fires when the guardrail could not reach TypeSafe |
 
 ## Caching
 

@@ -61,10 +61,6 @@ final class JevTestState {
 		self::$transients = array();
 		self::$options    = array(
 			'connectors_typesafe_api_key' => 'test-key',
-			'jevc_settings'               => array(
-				'default_model'   => 'jev-latest',
-				'rest_capability' => 'edit_posts',
-			),
 		);
 	}
 
@@ -412,10 +408,5 @@ require_once dirname( __DIR__ ) . '/includes/class-question.php';
 require_once dirname( __DIR__ ) . '/includes/class-response.php';
 require_once dirname( __DIR__ ) . '/includes/class-cache.php';
 require_once dirname( __DIR__ ) . '/includes/class-connector.php';
-require_once dirname( __DIR__ ) . '/includes/class-settings.php';
 require_once dirname( __DIR__ ) . '/includes/class-client.php';
-require_once dirname( __DIR__ ) . '/includes/modules/abstract-module.php';
-require_once dirname( __DIR__ ) . '/includes/modules/class-comment-guardrail.php';
-require_once dirname( __DIR__ ) . '/includes/modules/class-auto-tagger.php';
-require_once dirname( __DIR__ ) . '/includes/class-modules.php';
 require_once dirname( __DIR__ ) . '/includes/functions.php';

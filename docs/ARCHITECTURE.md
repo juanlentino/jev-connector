@@ -1,7 +1,8 @@
 # Architecture
 
-One request path, a thin settings layer, and an optional module layer on top.
-Nothing in the first two depends on the third.
+One request path and nothing else. The plugin has no screens: like the core
+AI provider connectors, its UI is the card core draws on Settings →
+Connectors, and every choice is a filter.
 
 ## Files
 
@@ -13,16 +14,9 @@ includes/
   class-question.php             noul / choice / score builders and validation
   class-response.php             Typed reader over the decoded body
   class-cache.php                Transient cache keyed by payload hash
-  class-settings.php             Settings → TypeSafe Jev screen (model, capability, modules)
   class-rest-controller.php      /jev/v1/ask and /jev/v1/status
-  class-modules.php              Module registry: discovery, enable flags, sanitizing
   class-exception.php            Thrown only for programmer error
   functions.php                  JevConnector\ask(), JevConnector\is_ready()
-  modules/
-    abstract-module.php          The module contract
-    class-comment-guardrail.php  pre_comment_approved evaluator
-    class-auto-tagger.php        Editor panel + two REST routes
-assets/js/auto-tagger.js         The panel, on wp.apiFetch
 assets/images/typesafe.png       Card logo
 uninstall.php                    Deletes the option and the credential
 ```
@@ -31,10 +25,10 @@ uninstall.php                    Deletes the option and the credential
 
 ```
 JevConnector\ask( $state, $questions, $args )        functions.php
-  └ reads default_model from settings if not passed
   └ Client::ask()
       ├ no key?                → WP_Error jevc_not_configured, no request
       ├ Question::validate_map → WP_Error jevc_invalid_question
+      ├ model: $args['model'] or filter jevc_default_model
       ├ build payload          → filter jevc_request_payload
       ├ Cache::get( payload )  → hit returns Response here
       ├ Client::send()
@@ -64,31 +58,18 @@ ones that fail, and the AI Client only understands generative capabilities.
 A working Jev key would be wiped. This is the single most important line in
 the codebase; [CLAUDE.md](../CLAUDE.md) explains it again.
 
-## Settings
+## Choices without a screen
 
-One option, `jevc_settings`:
+| Choice | Default | How to change it |
+| --- | --- | --- |
+| Model | `jev-latest` | `jevc_default_model` filter, or `model` per call |
+| REST capability | `edit_posts` | `jevc_rest_capability` filter |
+| Cache lifetime | one hour | `jevc_cache_ttl` filter, or `cache => false` per call |
+| HTTP timeout | 20 s | `jevc_http_timeout` filter |
 
-```php
-array(
-    'default_model'   => 'jev-latest',
-    'rest_capability' => 'edit_posts',
-    'modules'         => array(
-        'comment_guardrail' => array( 'enabled' => false, 'spam_threshold' => 0.95, ... ),
-        'auto_tagger'       => array( 'enabled' => false, 'taxonomy' => 'post_tag', ... ),
-    ),
-)
-```
-
-Written only through the Settings API. `Settings::sanitize()` cleans its own
-two fields and delegates the `modules` branch to `Modules::sanitize()`, which
-delegates each module's fields to that module's static `sanitize()`.
-
-## Modules
-
-`Modules::boot()` runs on `plugins_loaded`, instantiates every class from the
-`jevc_modules` filter, and calls `register()` only on the enabled ones. A
-disabled module costs one `new` and nothing else. The contract and the two
-shipped modules are in [MODULES.md](MODULES.md).
+The plugin stores nothing of its own. The key is core's; the cache is
+transients. `uninstall.php` still deletes `jevc_settings`, the option the
+0.2.x settings screen wrote, so an upgraded site is left clean.
 
 ## Error convention
 
@@ -103,6 +84,5 @@ exception.
 
 `tests/bootstrap.php` defines the ~25 WordPress functions the plugin calls,
 backed by a `JevTestState` holder for queued HTTP responses, options and
-transients. That is why decision logic is kept in pure static methods, and
-why the bootstrap is excluded from the WordPress coding-standards ruleset: it
-has to redeclare core function names.
+transients. That is why the bootstrap is excluded from the WordPress
+coding-standards ruleset: it has to redeclare core function names.

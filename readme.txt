@@ -1,10 +1,10 @@
 === Connector for TypeSafe Jev ===
 Contributors: juanlentino
-Tags: ai, classification, api, moderation, automation
+Tags: ai, classification, api, connector, automation
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.5
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,11 +30,7 @@ At its core this is a connector, not a feature. The plumbing comes first:
 * A REST proxy at `/wp-json/jev/v1/ask` so admin-side JavaScript never sees your key.
 * Filters and actions at every point worth intercepting.
 
-= Optional modules =
-
-**Comment guardrail.** Routes incoming comments to approve, hold, or spam. Two independent questions have to agree before anything is called spam, the worst verdict it will issue is recoverable from the spam folder, and it never returns trash. Anything it is unsure about is held for a human. Every decision is written to comment meta with its probabilities, so you can tune the thresholds against your own traffic instead of guessing. If TypeSafe is unreachable, the comment keeps whatever status WordPress already gave it.
-
-**Term suggestions.** Adds a panel to the post editor that asks one question per existing term, all in a single call, and lists the ones that clear your threshold with a probability each. It suggests only. Nothing is written until you tick a term and click Apply, and it never hooks `save_post`.
+This plugin adds no menu and no screens of its own. Like the provider connectors for Anthropic and Google, it is the card under **Settings → Connectors** plus a PHP and REST surface for other code to build on. What a site does with Jev's answers belongs to the theme or plugin that owns the content.
 
 = Example =
 
@@ -65,7 +61,7 @@ This plugin connects to the TypeSafe System One API, a third-party service opera
 
 **What is sent:** the state you supply to `JevConnector\ask()` or to the REST route (which may include post content, comment text, or any other data your code passes), the questions you define, and your model identifier. Your API key is sent as a bearer token, and the request's User-Agent header identifies this plugin, its version, and your site's home URL.
 
-**When it is sent:** only when your own code calls the client or the REST route, or when a module you have switched on runs. The comment guardrail sends a comment's text when that comment is submitted; the term suggestions panel sends a post's title and body when an editor clicks Suggest terms. Both are off by default. Nothing is sent until an administrator has connected TypeSafe under **Settings → Connectors**, and no request is made on activation, on page load, or on any schedule. Identical repeat requests are served from a local cache rather than re-sent.
+**When it is sent:** only when your own code calls `JevConnector\ask()` or a permitted user calls the REST route. This plugin itself never initiates a request. Nothing is sent until an administrator has connected TypeSafe under **Settings → Connectors**, and no request is made on activation, on page load, or on any schedule. Identical repeat requests are served from a local cache rather than re-sent.
 
 **Where it goes:** `https://api.typesafe.ai/v1/systemone`
 
@@ -76,7 +72,8 @@ Documentation: https://docs.typesafe.ai
 
 1. Upload the plugin to `/wp-content/plugins/` and activate it.
 2. Go to **Settings → Connectors** and add your TypeSafe API key to the TypeSafe Jev card. Keys are available from the TypeSafe console.
-3. Optionally visit **Settings → TypeSafe Jev** to change the default model or the capability required by the REST route.
+
+That is the whole setup. The default model (`jev-latest`) and the capability the REST route requires (`edit_posts`) are changed in code, with the `jevc_default_model` and `jevc_rest_capability` filters, the same way the core AI provider connectors leave choices to the code that uses them.
 
 To keep the key out of the database, set it in the environment or in `wp-config.php` instead. WordPress checks both before the stored value:
 
@@ -96,17 +93,13 @@ Because key management is handled entirely by the Connectors API introduced in 7
 
 No, and deliberately so. The core AI Client covers generative capabilities: text, image, speech, video. Jev is not generative. It returns a probability, a choice, or a score with a confidence figure, none of which survive a generative interface. The plugin registers as a non-generative service connector, the same way a spam filter does.
 
-= Will the comment guardrail delete anything? =
-
-No. The worst it does is mark a comment as spam, which you can undo from the spam folder, and it only does that when two separate questions agree at high confidence. Everything else is held for moderation. It never returns trash, and an API outage leaves moderation exactly as WordPress decided.
-
 = Does anything get sent without my say-so? =
 
 No. Until a key is present, every call returns a `jevc_not_configured` error and no HTTP request is made.
 
 = Can I use this from the block editor? =
 
-Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. The route requires a logged-in user with `edit_posts` by default; change the capability on the settings screen or with the `jevc_rest_capability` filter.
+Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. The route requires a logged-in user with `edit_posts` by default; change the capability with the `jevc_rest_capability` filter.
 
 = What happens when TypeSafe is rate-limiting or overloaded? =
 
@@ -114,9 +107,12 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 
 = Which hooks are available? =
 
-Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, `jevc_modules`, `jevc_guardrail_decision`, `jevc_guardrail_state`. Actions: `jevc_after_response`, `jevc_request_failed`, `jevc_guardrail_unavailable`.
+Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`. Actions: `jevc_after_response`, `jevc_request_failed`.
 
 == Changelog ==
+
+= 0.3.0 =
+* The plugin is now a pure connector, like the Anthropic and Google provider connectors: the card under Settings → Connectors, the PHP client, and the REST proxy. The Settings → TypeSafe Jev screen and the two optional modules (comment guardrail, term suggestions) are removed. Model and REST capability are set with the existing filters.
 
 = 0.2.5 =
 * The not-connected notice links only the word "Connectors", so shells that open it in its own window title that window sensibly.
