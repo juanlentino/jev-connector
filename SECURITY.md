@@ -22,36 +22,23 @@ request carries the state your code passes (which may be post or comment
 content), the questions, the model id, your API key as a bearer token, and a
 User-Agent naming the plugin, its version and the site's home URL. Nothing is
 sent on activation, page load, or a schedule; only when your code calls the
-client, when the REST proxy is called by a permitted user, or when a module you
-switched on runs.
-
-**The comment guardrail** sends the comment text, the display name the author
-typed, and the title of the post being commented on. It does not send the
-author's email address, URL, IP address or user agent. Filter
-`jevc_guardrail_state` to narrow it further.
-
-**The term-suggestions module** sends the post title and the post body with
-HTML stripped.
+client or when the REST proxy is called by a permitted user. The plugin itself
+never initiates a request.
 
 **Stored.** The API key is stored by WordPress core under the Connectors API,
 not by this plugin, and can be kept out of the database entirely with the
 `TYPESAFE_API_KEY` constant or environment variable. Responses are cached in
-transients keyed by a hash of the request for one hour. Guardrail decisions are
-written to comment meta as `_jevc_decision`.
+transients keyed by a hash of the request for one hour.
 
-**Removed on uninstall.** The plugin option and the connector credential.
-Transients expire on their own; comment meta is left with the comments.
+**Removed on uninstall.** The connector credential, and the `jevc_settings`
+option left by 0.2.x. Transients expire on their own.
 
 ## Trust boundaries
 
-- The REST routes require a logged-in user with a capability: `edit_posts` by
-  default for `/ask` and `/status` (changeable on the settings screen or with
-  `jevc_rest_capability`), and `edit_post` for the specific post on the
-  term-suggestion routes. The key never reaches the browser.
-- Settings are written only through the Settings API, which supplies the nonce
-  and capability check, and every value goes through a sanitizer.
+- The REST routes require a logged-in user with a capability, `edit_posts`
+  by default (`jevc_rest_capability`). The key never reaches the browser.
+- The plugin has no settings screen and no forms, so there is no input of its
+  own to sanitize beyond the REST parameters, which are validated.
 - Question ids supplied by callers are escaped before they appear in error
   messages.
 - The client makes no request until a key resolves, and follows no redirects.
-- The guardrail's worst verdict is `spam`, which is recoverable. It never
-  trashes a comment, and an API failure leaves the comment's status untouched.

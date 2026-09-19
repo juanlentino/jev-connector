@@ -47,10 +47,9 @@ This applies to the maintainer as well.
 ## Making a change
 
 1. Branch from `trunk`.
-2. Write the test first where the change has logic in it. Decision logic lives
-   in pure static methods (`Comment_Guardrail::decide()`,
-   `Auto_Tagger::suggestions_from()`, `Question::validate_map()`) precisely so
-   it can be tested without WordPress.
+2. Write the test first where the change has logic in it. Logic lives in
+   pure static methods (`Question::validate_map()`, the `Response` readers)
+   precisely so it can be tested without WordPress.
 3. Keep files small and single-purpose. Prefix everything `jevc_` or put it in
    the `JevConnector` namespace.
 4. Return `WP_Error` for anything that can fail at runtime. Throw
@@ -63,11 +62,13 @@ This applies to the maintainer as well.
 Do not bump the version in a feature PR. Releases are cut separately; see
 [docs/RELEASING.md](docs/RELEASING.md).
 
-## Adding a module
+## What does not belong here
 
-Modules are the opinionated layer and are off by default. See
-[docs/MODULES.md](docs/MODULES.md) for the contract. The core client must never
-depend on a module existing.
+The plugin is a connector. A feature that decides what a site should *do*
+with an answer (moderate a comment, tag a post, grade a draft) belongs in the
+plugin that owns that content, calling `JevConnector\ask()`. A settings
+screen would only exist to hold such features, so there is none. Pull
+requests adding either will be pointed here.
 
 ## Reporting a security issue
 

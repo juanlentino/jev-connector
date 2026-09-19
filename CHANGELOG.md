@@ -6,6 +6,37 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-19
+
+A pure connector. This is the shape the core AI provider connectors have:
+the card on Settings → Connectors, a client, a REST proxy, hooks, and no
+screens of its own. What a site does with Jev's answers belongs to the
+plugin that owns the content; Signal & Noise Tools, the one consumer, was
+already built that way and never used what is removed here.
+
+### Removed
+
+- The **Settings → TypeSafe Jev** screen. The default model and the REST
+  capability it held are set with the existing `jevc_default_model` and
+  `jevc_rest_capability` filters, which now carry the defaults
+  (`jev-latest`, `edit_posts`) directly.
+- The **comment guardrail** and **term suggestions** modules, the module
+  registry, and the editor script. Both were off by default and neither had
+  run against real traffic. They remain in git history at `v0.2.5` should a
+  separate plugin want them.
+- Hooks `jevc_modules`, `jevc_guardrail_decision`, `jevc_guardrail_state`,
+  `jevc_guardrail_unavailable`. Routes `/jev/v1/suggest-terms` and
+  `/jev/v1/apply-terms`.
+
+### Changed
+
+- `readme.txt` External services now states that the plugin itself never
+  initiates a request; only calling code and the REST proxy do.
+- `uninstall.php` still deletes `jevc_settings`, the option the removed
+  screen wrote, so a site upgraded from 0.2.x is left clean.
+- Shipped file count drops from 19 to 13. The consumer contract
+  (`tests/test-consumer-contract.php`) is unchanged and still passes.
+
 ## [0.2.5] - 2026-09-19
 
 ### Changed

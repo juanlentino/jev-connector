@@ -33,12 +33,6 @@ defined( 'ABSPATH' ) || exit;
  * @return Response|\WP_Error
  */
 function ask( $state, array $questions, array $args = array() ) {
-	$settings = Settings::all();
-
-	if ( ! isset( $args['model'] ) ) {
-		$args['model'] = (string) $settings['default_model'];
-	}
-
 	return ( new Client() )->ask( $state, $questions, $args );
 }
 

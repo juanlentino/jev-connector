@@ -12,9 +12,8 @@ Fired in this order for every call to `JevConnector\ask()` or `Client::ask()`.
 
 `( string $model ): string` — [class-client.php](../includes/class-client.php)
 
-The model id used when the caller passes none. Default `jev-latest`. Note
-that `JevConnector\ask()` reads the settings screen's model first, so this
-filter only sees calls that reach `Client::ask()` with no model at all.
+The model id used when the caller passes none. Default `jev-latest`. Also
+what `GET /jev/v1/status` reports as `model`.
 
 ### `jevc_http_timeout` (filter)
 
@@ -70,8 +69,8 @@ A call failed for good, after retries. Error codes are listed in
 
 `( string $capability ): string` — [class-rest-controller.php](../includes/class-rest-controller.php)
 
-Capability checked by `POST /jev/v1/ask` and `GET /jev/v1/status`. The value
-passed in is whatever the settings screen holds (default `edit_posts`).
+Capability checked by `POST /jev/v1/ask` and `GET /jev/v1/status`. Default
+`edit_posts`.
 
 ## Connector registration
 
@@ -90,35 +89,3 @@ explicitly.
 `( array $args ): array`
 
 The whole definition passed to `WP_Connector_Registry::register()`.
-
-## Modules
-
-### `jevc_modules` (filter)
-
-`( string[] $classes ): string[]` — [class-modules.php](../includes/class-modules.php)
-
-Class names extending `JevConnector\Modules\Module`. Add your own here; see
-[MODULES.md](MODULES.md).
-
-### `jevc_guardrail_state` (filter)
-
-`( array $state, array $commentdata ): array` — [class-comment-guardrail.php](../includes/modules/class-comment-guardrail.php)
-
-What is sent about a comment: `comment`, `author`, and `post_title` when
-known. Email, URL and IP are never included; use this to narrow it further or
-to add context.
-
-### `jevc_guardrail_decision` (filter)
-
-`( int|string $decision, JevConnector\Response $response, array $commentdata ): int|string`
-
-The verdict before it is returned to `pre_comment_approved`: `1` approve,
-`0` hold, `'spam'`. Returning `'trash'` from here is your decision, not the
-module's; the module never produces it.
-
-### `jevc_guardrail_unavailable` (action)
-
-`( WP_Error $error, array $commentdata )`
-
-TypeSafe could not be reached while evaluating a comment. The comment keeps
-the status WordPress already gave it. Hook this to log or alert.
