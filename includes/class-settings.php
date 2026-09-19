@@ -313,9 +313,16 @@ final class Settings {
 			<p>
 				<?php echo esc_html( $labels[ $source ] ); ?>
 				<?php if ( 'database' === $source || 'none' === $source ) : ?>
-					<a href="<?php echo esc_url( Connector::settings_url() ); ?>">
-						<?php esc_html_e( 'Manage the key under Settings then Connectors.', 'connector-for-typesafe-jev' ); ?>
-					</a>
+					<?php
+					// Only the destination's name is linked. Shells that open
+					// cross-page links in their own window (OpenStation) title
+					// that window from the link text.
+					printf(
+						/* translators: %s: link to the core Connectors screen, labelled "Connectors". */
+						esc_html__( 'Manage the key under Settings → %s.', 'connector-for-typesafe-jev' ),
+						'<a href="' . esc_url( Connector::settings_url() ) . '">' . esc_html__( 'Connectors', 'connector-for-typesafe-jev' ) . '</a>'
+					);
+					?>
 				<?php endif; ?>
 			</p>
 		</div>

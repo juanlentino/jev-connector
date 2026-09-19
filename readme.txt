@@ -4,7 +4,7 @@ Tags: ai, classification, api, moderation, automation
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.4
+Stable tag: 0.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,6 +117,9 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, `jevc_modules`, `jevc_guardrail_decision`, `jevc_guardrail_state`. Actions: `jevc_after_response`, `jevc_request_failed`, `jevc_guardrail_unavailable`.
 
 == Changelog ==
+
+= 0.2.5 =
+* The not-connected notice links only the word "Connectors", so shells that open it in its own window title that window sensibly.
 
 = 0.2.4 =
 * Fixed the "Get your API key" link on the Connectors card; it now opens the console's keys page.
