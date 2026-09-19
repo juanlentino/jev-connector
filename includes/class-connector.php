@@ -79,7 +79,7 @@ final class Connector {
 			'logo_url'       => plugins_url( 'assets/images/typesafe.png', PLUGIN_FILE ),
 			'authentication' => array(
 				'method'          => 'api_key',
-				'credentials_url' => 'https://console.typesafe.ai/settings/keys',
+				'credentials_url' => 'https://console.typesafe.ai/keys',
 				'setting_name'    => self::SETTING_NAME,
 				'constant_name'   => self::CONSTANT,
 				'env_var_name'    => self::ENV_VAR,

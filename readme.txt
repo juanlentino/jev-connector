@@ -4,7 +4,7 @@ Tags: ai, classification, api, moderation, automation
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.3
+Stable tag: 0.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,7 +86,7 @@ To keep the key out of the database, set it in the environment or in `wp-config.
 
 = Do I need a TypeSafe account? =
 
-Yes. The plugin is a bring-your-own-key client for a third-party API. Create a key at https://console.typesafe.ai/settings/keys.
+Yes. The plugin is a bring-your-own-key client for a third-party API. Create a key at https://console.typesafe.ai/keys.
 
 = Why does this require WordPress 7.0? =
 
@@ -117,6 +117,9 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`, `jevc_modules`, `jevc_guardrail_decision`, `jevc_guardrail_state`. Actions: `jevc_after_response`, `jevc_request_failed`, `jevc_guardrail_unavailable`.
 
 == Changelog ==
+
+= 0.2.4 =
+* Fixed the "Get your API key" link on the Connectors card; it now opens the console's keys page.
 
 = 0.2.3 =
 * Fixed the link to Settings → Connectors on the plugin's settings screen and in the not-connected notice. It pointed at a page core refuses; it now opens the Connectors screen.
