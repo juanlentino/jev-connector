@@ -162,6 +162,6 @@ final class Connector {
 	 * @return string
 	 */
 	public static function settings_url(): string {
-		return admin_url( 'options-general.php?page=connectors' );
+		return admin_url( 'options-connectors.php' );
 	}
 }

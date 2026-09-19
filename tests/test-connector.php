@@ -54,6 +54,17 @@ final class ConnectorTest extends TestCase {
 	}
 
 	/**
+	 * Core registers the Connectors screen as its own admin file
+	 * (wp-admin/menu.php: options-connectors.php), not as a page under
+	 * options-general.php. The wrong form answers "you are not allowed".
+	 *
+	 * @return void
+	 */
+	public function test_settings_url_is_core_connectors_screen(): void {
+		$this->assertStringEndsWith( '/wp-admin/options-connectors.php', Connector::settings_url() );
+	}
+
+	/**
 	 * The stored option is used when no environment or constant is present.
 	 *
 	 * @return void
