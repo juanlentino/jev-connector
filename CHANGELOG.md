@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-09-19
+
+### Changed
+
+- The not-connected notice now reads "Manage the key under Settings →
+  Connectors." with only "Connectors" linked. Shells that open cross-page
+  links in their own window (OpenStation does, by its bridge protocol's
+  rule 3, for every plugin's settings page including core's own AI settings)
+  title that window from the link text, so the window is now called
+  "Connectors" rather than the whole sentence. Reads better in classic
+  wp-admin too. Nothing else about the link changed; OpenStation opening a
+  separate window is the shell's behaviour, not the plugin's, and there is
+  no sanctioned per-link way to opt out of it.
+
 ## [0.2.4] - 2026-09-19
 
 ### Fixed
