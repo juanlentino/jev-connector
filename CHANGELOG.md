@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-09-19
+
+### Fixed
+
+- `Connector::settings_url()` pointed at `options-general.php?page=connectors`,
+  which core answers with "you are not allowed to access this page". Core
+  registers the Connectors screen as its own admin file,
+  `options-connectors.php` (`wp-admin/menu.php`). Every "manage the key" link
+  on the settings screen and in the not-connected notice was dead since 0.1.0.
+  Reported in #8 from a live 7.1 site; a test now pins the path.
+- The test bootstrap never loaded `includes/functions.php`, so
+  `JevConnector\ask()`, the entry point consumers call, had no coverage.
+
 ### Added
 
 - Repository documentation, none of which ships in the plugin zip:
@@ -34,11 +47,6 @@ All notable changes to this project are documented here. The format follows
   Release branches are not created ahead of need; a numbered branch such as
   `0.2` is cut from its tag only if that line needs a fix after a newer
   minor exists, which is also the WordPress convention.
-
-### Fixed
-
-- The test bootstrap never loaded `includes/functions.php`, so
-  `JevConnector\ask()` — the entry point consumers call — had no coverage.
 
 ## [0.2.2] - 2026-09-18
 
