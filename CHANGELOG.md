@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-09-19
+
+### Fixed
+
+- The card's "Get your API key" link (`credentials_url`) pointed at
+  `console.typesafe.ai/settings/keys`. The console's keys page is
+  `console.typesafe.ai/keys`. Same URL corrected in `readme.txt` and README.
+  A test pins the value.
+
 ## [0.2.3] - 2026-09-19
 
 ### Fixed

@@ -16,7 +16,7 @@ No prose parsing. No prompt wrangling in your template files.
 
 - WordPress 7.0 or later (the key is managed by core's Connectors API; there is no fallback field)
 - PHP 7.4 or later
-- A TypeSafe API key from the [console](https://console.typesafe.ai/settings/keys)
+- A TypeSafe API key from the [console](https://console.typesafe.ai/keys)
 
 ## Why typed answers
 
@@ -44,7 +44,7 @@ git clone https://github.com/juanlentino/jev-connector.git wp-content/plugins/co
 
 Requires WordPress 7.0, because the key is managed by the core [Connectors API](https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/) rather than by anything this plugin invented.
 
-Go to **Settings → Connectors**, find the TypeSafe Jev card, and paste a key from the [TypeSafe console](https://console.typesafe.ai/settings/keys). Core stores it, masks it in the UI and in REST responses, and resolves it in this order:
+Go to **Settings → Connectors**, find the TypeSafe Jev card, and paste a key from the [TypeSafe console](https://console.typesafe.ai/keys). Core stores it, masks it in the UI and in REST responses, and resolves it in this order:
 
 1. `TYPESAFE_API_KEY` environment variable
 2. `TYPESAFE_API_KEY` constant in `wp-config.php`

@@ -37,7 +37,8 @@ final class ConnectorTest extends TestCase {
 		$this->assertSame( 'connectors_typesafe_api_key', $args['authentication']['setting_name'] );
 		$this->assertSame( 'TYPESAFE_API_KEY', $args['authentication']['constant_name'] );
 		$this->assertSame( 'TYPESAFE_API_KEY', $args['authentication']['env_var_name'] );
-		$this->assertArrayHasKey( 'credentials_url', $args['authentication'] );
+		// Where the card's "get your API key" link goes. /settings/keys was wrong.
+		$this->assertSame( 'https://console.typesafe.ai/keys', $args['authentication']['credentials_url'] );
 		$this->assertArrayHasKey( 'file', $args['plugin'] );
 		$this->assertStringEndsWith( '/assets/images/typesafe.png', $args['logo_url'] );
 		$this->assertFileExists( dirname( __DIR__ ) . '/assets/images/typesafe.png' );
