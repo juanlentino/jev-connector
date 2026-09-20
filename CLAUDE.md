@@ -24,8 +24,13 @@ probabilities, choices and scores. Registering as an AI provider would get a
 working key silently wiped. Akismet's non-AI connector is the precedent we
 follow. See `includes/class-connector.php`.
 
-**The connector `type` is not a user setting.** It groups the card and, for AI
-providers, feeds the auto-generated `setting_name`. A user flipping it after
+**The connector `type` is not a user setting.** Core and the AI plugin compare
+it against `ai_provider` and nothing else: that value triggers AI Client key
+validation, the install callout on the Connectors screen, and the AI plugin's
+credential count. The screen does NOT group cards by type; it is one flat
+list sorted by id (checked in Gutenberg's `routes/connectors-home/stage.tsx`,
+2026-09-20). For AI providers the type also feeds the auto-generated
+`setting_name`. A user flipping it after
 saving a key orphans the credential. It is filterable for developers
 (`jevc_connector_type`) and that is safe only because `setting_name`,
 `constant_name` and `env_var_name` are all declared explicitly.
@@ -74,7 +79,7 @@ would mean two paths to keep in sync forever.
 
 Plugin Check runs in CI against a live install, so static and readme checks
 are covered. Seen working on a real WordPress 7.1 site (2026-09-18): the
-connector card renders under its own type, separate from the AI providers,
-and saving a key shows Connected rather than being wiped by AI Client
-validation. Signal & Noise Tools 16.5.3 runs every Jev request through
+connector card renders in the list alongside the AI providers, untouched by
+the `ai_provider` special-casing, and saving a key shows Connected rather
+than being wiped by AI Client validation. Signal & Noise Tools 16.5.3 runs every Jev request through
 `JevConnector\ask()` on that site (118 requests, 0 failures in one session).

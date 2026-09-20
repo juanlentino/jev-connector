@@ -23,10 +23,10 @@ part only you can do.
       describes exactly what your build sends. Connecting the service in core's
       own UI is the implied consent guideline 7 describes, the same way Akismet
       works, so there is no separate checkbox to defend.
-- [ ] **Confirm the connector card renders.** It should appear under Settings →
-      Connectors with its own type, not grouped with the AI providers, and
+- [ ] **Confirm the connector card renders.** It should appear in the list
+      under Settings → Connectors (the screen does not group by type), and
       saving a key should not trigger AI Client validation.
-- [ ] **Build the zip**: push a `v0.2.2` tag, or run the Release workflow by
+- [ ] **Build the zip**: push a `vX.Y.Z` tag, or run the Release workflow by
       hand, and download the artifact. Install that zip on a clean site.
 
 ## The four things that get plugins rejected

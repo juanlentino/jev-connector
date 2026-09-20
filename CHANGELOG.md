@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Docs said the Connectors screen groups cards by `type` and that this
+  plugin's card sits in its own group. It does not: the screen is one flat
+  list sorted by id, and `type` is only ever compared against `ai_provider`
+  (core: key validation, default providers, logos; screen: the install
+  callout; AI plugin: the credential count). Corrected in `CLAUDE.md`,
+  `SUBMITTING.md` and `docs/HOOKS.md`. The same error went into Core Trac
+  #66146 and was corrected there.
+
 ## [0.3.0] - 2026-09-19
 
 A pure connector. This is the shape the core AI provider connectors have:
