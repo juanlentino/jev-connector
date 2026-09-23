@@ -103,11 +103,13 @@ among the AI providers without being one: core stores and masks the key, the
 card is the whole UI, and no AI Client validation runs against it. There is no
 key field here to screenshot, because the plugin never renders one.
 
-<!-- Second image pending; see the capture list in .github/images/README.md.
-<img src=".github/images/answers.png" alt="One call returning a probability, a named choice and a score, each with a confidence figure" width="760">
+<img src=".github/images/answers.png" alt="A wp eval call returning noul technical 0.61, choice audience practitioner at confidence 0.69, and score evidence 0.0 of 2 at confidence 1.00" width="760">
 
-*One call, three typed answers.*
--->
+One real call on that site, through WP-CLI. Three questions, three typed
+answers: a probability, a named choice with its confidence, and a position on
+a rubric with its confidence. Note the last line. The body given here was a
+single sentence, so "no support" at full confidence is the right answer, and
+a caller gating on `score >= 1` acts on it without parsing a word.
 
 ## Use
 

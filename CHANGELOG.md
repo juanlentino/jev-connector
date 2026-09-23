@@ -32,7 +32,9 @@ All notable changes to this project are documented here. The format follows
   live WordPress 7.1 site, with TypeSafe Jev connected among the Anthropic and
   Google provider cards, cropped to the card list. It is also
   `.wordpress-org/screenshot-1.png` for the directory listing. The second is
-  commented out until captured;
+  one real `wp eval` call on that site returning a noul, a choice and a score
+  with their confidences, cropped so the shell prompt, the document root and
+  the server IP in the status bar are out of frame;
   `.github/images/README.md` says exactly what to capture and what must not
   appear in the frame. `readme.txt` gains the matching `== Screenshots ==`
   captions and `.wordpress-org/README.md` lists the second file.
