@@ -96,13 +96,15 @@ the companion request for the PHP AI Client is
 
 ## Screenshots
 
-<!-- Images are not committed yet. See the capture list in .github/images/README.md.
-<img src=".github/images/connectors-card.png" alt="The TypeSafe Jev card on Settings then Connectors, connected, alongside the Anthropic and Google provider cards" width="900">
+<img src=".github/images/connectors-card.png" alt="The Connectors screen with four cards: Anthropic connected, Google connected, OpenAI offering Install, and TypeSafe Jev connected" width="760">
 
-*The card core draws on **Settings → Connectors**. The key is stored and masked
-by WordPress; this plugin never renders a key field of its own.*
+**Settings → Connectors** on a live WordPress 7.1 site. TypeSafe Jev sits
+among the AI providers without being one: core stores and masks the key, the
+card is the whole UI, and no AI Client validation runs against it. There is no
+key field here to screenshot, because the plugin never renders one.
 
-<img src=".github/images/answers.png" alt="One call returning a probability, a named choice and a score, each with a confidence figure" width="900">
+<!-- Second image pending; see the capture list in .github/images/README.md.
+<img src=".github/images/answers.png" alt="One call returning a probability, a named choice and a score, each with a confidence figure" width="760">
 
 *One call, three typed answers.*
 -->

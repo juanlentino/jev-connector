@@ -9,6 +9,7 @@ preview only. Directory listing assets are a separate set; see
 
 | File | Size | Where it is used |
 | --- | --- | --- |
+| `connectors-card.png` | 700 × 450 | README, Screenshots. Captured from a live WordPress 7.1 site, cropped to the card list. Also copied to `.wordpress-org/screenshot-1.png`. |
 | `social-preview.png` | 1280 × 640 | GitHub **Settings → General → Social preview**. Upload by hand: the API cannot set it. |
 | `social-preview.svg` | source | Regenerate the PNG after editing (see below). |
 
@@ -26,23 +27,10 @@ directly makes it scale to fit and clips the right edge.
 
 ## Still to capture
 
-Two images, both referenced from the README's Screenshots section, which is
-commented out until they exist. Uncomment it in the same commit that adds them.
+One image, referenced from the README's Screenshots section, which is
+commented out until it exists. Uncomment it in the same commit that adds it.
 
-### 1. `connectors-card.png` — the card
-
-**Settings → Connectors**, with the TypeSafe Jev card connected. Frame the
-card list so Anthropic and Google are visible above it: the point of the shot
-is that Jev sits among the AI providers while not being one.
-
-- No key is on screen in this state. Core renders "Connected" and an Edit
-  link, never the key. Check before saving the file anyway.
-- Crop to the card list. Leave out the admin menu, the site name and any
-  other plugin's rows.
-- A 2x (Retina) capture, roughly 1800 px wide before scaling, keeps the text
-  crisp on GitHub.
-
-### 2. `answers.png` — one call, three answers
+### `answers.png` — one call, three answers
 
 A single `ask()` returning a `noul`, a `choice` and a `score`, each with its
 confidence. Either a terminal running the example through WP-CLI, or the

@@ -28,7 +28,11 @@ All notable changes to this project are documented here. The format follows
 - "Not an AI provider, on purpose" now links Core Trac #66146 and
   php-ai-client#296, where the Connectors screen behaviour was reported and
   corrected.
-- A "Screenshots" section, commented out until the two images exist;
+- A "Screenshots" section. The first image is in: the Connectors screen on a
+  live WordPress 7.1 site, with TypeSafe Jev connected among the Anthropic and
+  Google provider cards, cropped to the card list. It is also
+  `.wordpress-org/screenshot-1.png` for the directory listing. The second is
+  commented out until captured;
   `.github/images/README.md` says exactly what to capture and what must not
   appear in the frame. `readme.txt` gains the matching `== Screenshots ==`
   captions and `.wordpress-org/README.md` lists the second file.
