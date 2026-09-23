@@ -129,6 +129,45 @@ final class ConsumerContractTest extends TestCase {
 	}
 
 	/**
+	 * The example in README.md's "In five lines" section, executed.
+	 *
+	 * The README is the first thing anyone reads, so its example is part of
+	 * the public surface: a reader copies it verbatim. Pinning it here means
+	 * a change to ask(), to Question::noul() or to Response::noul() fails the
+	 * suite instead of silently leaving a broken snippet at the top of the
+	 * page. Keep the two in step; if this test changes, the README changes.
+	 *
+	 * @return void
+	 */
+	public function test_readme_five_line_example(): void {
+		JevTestState::$responses[] = JevTestState::http(
+			200,
+			array(
+				'model'   => 'jev-latest',
+				'answers' => array(
+					'spam' => array( 'noul' => 0.97 ),
+				),
+			)
+		);
+
+		$answer = call_user_func(
+			self::ASK,
+			array( 'comment' => 'Cheap watches, best prices, click here.' ),
+			array( 'spam' => \JevConnector\Question::noul( 'Is this comment spam?' ) )
+		);
+
+		$this->assertFalse( is_wp_error( $answer ) );
+		$this->assertSame( 0.97, $answer->noul( 'spam' ) );
+		$this->assertTrue( $answer->noul( 'spam' ) >= 0.9 );
+
+		// The state and the question reach the wire in the shape shown.
+		$sent = json_decode( JevTestState::$requests[0]['args']['body'], true );
+		$this->assertSame( array( 'comment' => 'Cheap watches, best prices, click here.' ), $sent['state'] );
+		$this->assertSame( 'noul', $sent['questions']['spam']['type'] );
+		$this->assertSame( 'Is this comment spam?', $sent['questions']['spam']['instructions'] );
+	}
+
+	/**
 	 * Without a key nothing is sent and the error is jevc_not_configured.
 	 *
 	 * @return void

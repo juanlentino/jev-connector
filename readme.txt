@@ -20,6 +20,25 @@ Most AI plugins hand you a paragraph of prose and leave you to parse it. This on
 
 Many questions can be sent in a single call and are evaluated in parallel.
 
+= In five lines =
+
+`
+use JevConnector\Question;
+
+$answer = JevConnector\ask(
+    array( 'comment' => $comment->comment_content ),
+    array( 'spam' => Question::noul( 'Is this comment spam?' ) )
+);
+
+if ( ! is_wp_error( $answer ) && $answer->noul( 'spam' ) >= 0.9 ) {
+    wp_spam_comment( $comment );
+}
+`
+
+A probability you branch on, not prose you parse. For a choice or a score the
+gate is `is_confident()`; for a noul the probability is itself the confidence,
+so the threshold goes straight on the value.
+
 At its core this is a connector, not a feature. The plumbing comes first:
 
 * Registration with the WordPress Connectors API, so your key is managed by core under **Settings → Connectors** and never by a field this plugin invented.
@@ -108,6 +127,11 @@ Yes. Call `POST /wp-json/jev/v1/ask` with a `state` and a `questions` object. Th
 = Which hooks are available? =
 
 Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jevc_request_args`, `jevc_retry_delay`, `jevc_rest_capability`, `jevc_cache_ttl`, `jevc_connector_type`, `jevc_connector_args`. Actions: `jevc_after_response`, `jevc_request_failed`.
+
+== Screenshots ==
+
+1. The TypeSafe Jev card on Settings → Connectors, connected. The key is stored and masked by WordPress core; this plugin renders no key field of its own.
+2. One call returning a probability, a named choice and a score, each with its confidence figure.
 
 == Changelog ==
 
