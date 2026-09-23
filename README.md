@@ -12,6 +12,26 @@ No prose parsing. No prompt wrangling in your template files.
 
 **Status:** 0.x, pending review for the WordPress plugin directory. The public API may still move before 1.0; changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
+## In five lines
+
+```php
+use JevConnector\Question;
+
+$answer = JevConnector\ask(
+    array( 'comment' => $comment->comment_content ),
+    array( 'spam' => Question::noul( 'Is this comment spam?' ) )
+);
+
+if ( ! is_wp_error( $answer ) && $answer->noul( 'spam' ) >= 0.9 ) {
+    wp_spam_comment( $comment );
+}
+```
+
+A probability you branch on, not prose you parse. For `choice` and `score`
+answers the gate is [`is_confident()`](#confidence-gating); for a `noul` the
+probability is itself the confidence, so the threshold goes straight on the
+value. This example is pinned by a test, so it cannot drift from the API.
+
 ## Requirements
 
 - WordPress 7.0 or later (the key is managed by core's Connectors API; there is no fallback field)
@@ -68,6 +88,28 @@ What a site does with an answer (moderate a comment, tag a post, grade a draft) 
 The core AI Client is generative: text, image, speech, video. Jev is not. It returns a probability, a choice, or a score with a confidence figure, and routing that through `generate_text()` throws away everything worth having. Core also special-cases `type => 'ai_provider'` by validating those keys against the AI Client and clearing the ones it cannot verify, which would quietly wipe a working Jev key.
 
 So this registers as a non-generative service connector, the way a spam filter does. You still get core's key management. You just don't get misfiled.
+
+How the Connectors screen actually treats a plugin-defined `type` was reported
+and corrected in [Core Trac #66146](https://core.trac.wordpress.org/ticket/66146);
+the companion request for the PHP AI Client is
+[php-ai-client#296](https://github.com/WordPress/php-ai-client/issues/296).
+
+## Screenshots
+
+<img src=".github/images/connectors-card.png" alt="The Connectors screen with four cards: Anthropic connected, Google connected, OpenAI offering Install, and TypeSafe Jev connected" width="760">
+
+**Settings → Connectors** on a live WordPress 7.1 site. TypeSafe Jev sits
+among the AI providers without being one: core stores and masks the key, the
+card is the whole UI, and no AI Client validation runs against it. There is no
+key field here to screenshot, because the plugin never renders one.
+
+<img src=".github/images/answers.png" alt="A wp eval call returning noul technical 0.61, choice audience practitioner at confidence 0.69, and score evidence 0.0 of 2 at confidence 1.00" width="760">
+
+One real call on that site, through WP-CLI. Three questions, three typed
+answers: a probability, a named choice with its confidence, and a position on
+a rubric with its confidence. Note the last line. The body given here was a
+single sentence, so "no support" at full confidence is the right answer, and
+a caller gating on `score >= 1` acts on it without parsing a word.
 
 ## Use
 
@@ -129,6 +171,19 @@ if ( $answer->is_confident( 'route', 0.9 ) ) {
 ```
 
 For a `noul`, `is_confident()` measures distance from 0.5, so 0.97 and 0.03 are both confident and 0.52 is not.
+
+## In production
+
+[juanlentino.com](https://juanlentino.com) runs six typed readings over its
+published corpus through this connector, each one a request per note, each
+one gated on confidence and metered. [Signal & Noise
+Tools](https://github.com/juanlentino/signal-and-noise-tools) is the consumer
+that owns those decisions; this plugin only carries the question and the
+answer.
+
+What each reading asks, the rubric it scores against, what happens when Jev
+is unsure, and what it costs are written down in that plugin's
+[AI.md](https://github.com/juanlentino/signal-and-noise-tools/blob/main/AI.md#jev-judges).
 
 ## REST
 

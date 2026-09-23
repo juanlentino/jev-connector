@@ -6,6 +6,44 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Documentation
+
+- README opens with an "In five lines" example: the smallest honest call, a
+  comment spam check. It is executed by
+  `ConsumerContractTest::test_readme_five_line_example`, so the snippet at the
+  top of the page cannot drift from `ask()`, `Question::noul()` or
+  `Response::noul()`.
+- The example gates on `noul( 'spam' ) >= 0.9` rather than
+  `is_confident( 'spam', 0.9 )`. For a noul, `is_confident()` measures
+  distance from 0.5 in either direction, so a comment scoring 0.02 (clearly
+  not spam) passes it; using it as the spam gate would flag innocent
+  comments. `is_confident()` is right for `choice` and `score`, and the
+  README says so.
+- "In production" records that juanlentino.com runs six typed readings over
+  its corpus through the connector, with Signal & Noise Tools as the consumer
+  that owns the decisions, and links that plugin's public `AI.md`, where each
+  reading's rubric, its unsure-case behaviour and its cost are written down.
+  The two repositories now point at each other: S&N Tools already credited
+  the connector.
+- "Not an AI provider, on purpose" now links Core Trac #66146 and
+  php-ai-client#296, where the Connectors screen behaviour was reported and
+  corrected.
+- A "Screenshots" section. The first image is in: the Connectors screen on a
+  live WordPress 7.1 site, with TypeSafe Jev connected among the Anthropic and
+  Google provider cards, cropped to the card list. It is also
+  `.wordpress-org/screenshot-1.png` for the directory listing. The second is
+  one real `wp eval` call on that site returning a noul, a choice and a score
+  with their confidences, cropped so the shell prompt, the document root and
+  the server IP in the status bar are out of frame;
+  `.github/images/README.md` says exactly what to capture and what must not
+  appear in the frame. `readme.txt` gains the matching `== Screenshots ==`
+  captions and `.wordpress-org/README.md` lists the second file.
+- `readme.txt` mirrors the five-line hook in the directory's voice. The short
+  description, `Stable tag` and version are untouched.
+- `.github/images/social-preview.png` (1280 × 640) plus the SVG it is
+  generated from, for GitHub's social preview. Neither ships: `.github` is
+  excluded by `.distignore`.
+
 ### Fixed
 
 - Docs said the Connectors screen groups cards by `type` and that this

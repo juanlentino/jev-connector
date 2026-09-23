@@ -55,6 +55,12 @@ would mean two paths to keep in sync forever.
   without WordPress.
 - `CHANGELOG.md` is updated with every change. 0.x versioning until the public
   API is frozen at 1.0.
+- The README's "In five lines" example is pinned by
+  `ConsumerContractTest::test_readme_five_line_example`. It is the first code
+  anyone copies, so it counts as public surface: change the API and that test
+  fails, and the README must change in the same commit. Note the trap it
+  avoids — `is_confident()` on a `noul` measures distance from 0.5, so it is
+  true for a confident *not* spam; the gate there is the probability itself.
 - Everything returns `WP_Error` rather than throwing. `Exception` is only for
   programmer error in building a request.
 
