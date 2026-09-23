@@ -19,9 +19,12 @@ All notable changes to this project are documented here. The format follows
   not spam) passes it; using it as the spam gate would flag innocent
   comments. `is_confident()` is right for `choice` and `score`, and the
   README says so.
-- "In production" records that juanlentino.com runs its editorial quality
-  checks through the connector, with Signal & Noise Tools as the consumer
-  that owns the decisions.
+- "In production" records that juanlentino.com runs six typed readings over
+  its corpus through the connector, with Signal & Noise Tools as the consumer
+  that owns the decisions, and links that plugin's public `AI.md`, where each
+  reading's rubric, its unsure-case behaviour and its cost are written down.
+  The two repositories now point at each other: S&N Tools already credited
+  the connector.
 - "Not an AI provider, on purpose" now links Core Trac #66146 and
   php-ai-client#296, where the Connectors screen behaviour was reported and
   corrected.

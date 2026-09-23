@@ -170,12 +170,16 @@ For a `noul`, `is_confident()` measures distance from 0.5, so 0.97 and 0.03 are 
 
 ## In production
 
-[juanlentino.com](https://juanlentino.com) runs its editorial quality checks
-through this connector: typed judgments across its whole published corpus,
-gated on confidence, with every call metered. [Signal & Noise
+[juanlentino.com](https://juanlentino.com) runs six typed readings over its
+published corpus through this connector, each one a request per note, each
+one gated on confidence and metered. [Signal & Noise
 Tools](https://github.com/juanlentino/signal-and-noise-tools) is the consumer
 that owns those decisions; this plugin only carries the question and the
 answer.
+
+What each reading asks, the rubric it scores against, what happens when Jev
+is unsure, and what it costs are written down in that plugin's
+[AI.md](https://github.com/juanlentino/signal-and-noise-tools/blob/main/AI.md#jev-judges).
 
 ## REST
 
