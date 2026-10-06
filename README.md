@@ -83,16 +83,13 @@ add_filter( 'jevc_rest_capability', fn() => 'manage_options' );
 
 What a site does with an answer (moderate a comment, tag a post, grade a draft) belongs to the plugin or theme that owns that content. [Signal & Noise Tools](https://github.com/juanlentino/signal-and-noise-tools) is the first consumer built that way.
 
-### Not an AI provider, on purpose
+### Not an AI provider, yet
 
-The core AI Client is generative: text, image, speech, video. Jev is not. It returns a probability, a choice, or a score with a confidence figure, and routing that through `generate_text()` throws away everything worth having. Core also special-cases `type => 'ai_provider'` by validating those keys against the AI Client and clearing the ones it cannot verify, which would quietly wipe a working Jev key.
+Jev is not an LLM, and TypeSafe presents it that way: it returns a probability, a choice, or a score with a confidence figure, and generates no text. The PHP AI Client that WordPress ships describes models by capability (text, image, speech, video, embeddings), and none of those fits a model that answers typed questions.
 
-So this registers as a non-generative service connector, the way a spam filter does. You still get core's key management. You just don't get misfiled.
+That gap is the whole reason for the connector type. Core treats `type => 'ai_provider'` specially: when a key is saved, it asks the provider class registered under the same id in the AI Client whether it is configured, and clears the key unless the answer is exactly `true`. With no provider class there is nothing to ask, and the key is cleared. This plugin has no provider class, because there is no capability yet for one to declare. Registered as `ai_decision`, it keeps core's key storage and masking without that check.
 
-How the Connectors screen actually treats a plugin-defined `type` was reported
-and corrected in [Core Trac #66146](https://core.trac.wordpress.org/ticket/66146);
-the companion request for the PHP AI Client is
-[php-ai-client#296](https://github.com/WordPress/php-ai-client/issues/296).
+The Core AI team's stated direction is to support decision models inside the AI Client, tracked in [php-ai-client#296](https://github.com/WordPress/php-ai-client/issues/296). When that lands, this plugin adds a provider class and switches to `ai_provider`. The setting names are declared explicitly, so the stored key does not move. The discussion, including how core treats a plugin-defined `type`, is on [Core Trac #66146](https://core.trac.wordpress.org/ticket/66146).
 
 ## Screenshots
 
@@ -219,7 +216,7 @@ Full signatures and firing order are in [docs/HOOKS.md](docs/HOOKS.md).
 | `jevc_retry_delay` | filter | Backoff in seconds; return 0 to disable sleeping |
 | `jevc_rest_capability` | filter | Capability required by the REST route |
 | `jevc_cache_ttl` | filter | Response cache lifetime; return 0 to disable |
-| `jevc_connector_type` | filter | Connector type used to group the card |
+| `jevc_connector_type` | filter | Connector type (default `ai_decision`; see above before changing) |
 | `jevc_connector_args` | filter | The whole connector definition before registration |
 | `jevc_after_response` | action | Fires with the `Response` on success |
 | `jevc_request_failed` | action | Fires with the `WP_Error` on final failure |

@@ -52,11 +52,14 @@ REST, and this plugin reads it back with the same precedence core uses:
 `TYPESAFE_API_KEY` env var, then constant, then the option
 `connectors_typesafe_api_key`.
 
-It registers with `type => 'ai_decision'`, not `ai_provider`. Core hands
-`ai_provider` keys to the PHP AI Client for validation on save and clears the
-ones that fail, and the AI Client only understands generative capabilities.
-A working Jev key would be wiped. This is the single most important line in
-the codebase; [CLAUDE.md](../CLAUDE.md) explains it again.
+It registers with `type => 'ai_decision'`, not `ai_provider`. Core checks each
+submitted `ai_provider` key on save against the provider class registered under
+the same id in the PHP AI Client (`_wp_connectors_rest_settings_dispatch()` calls
+`_wp_connectors_is_ai_api_key_valid()`) and clears it unless the result is
+exactly `true`; with no provider class the result is `null`. There is no Jev
+provider class because the AI Client has no capability yet for a model that
+returns probabilities, choices and scores. When php-ai-client#296 lands, this
+becomes an `ai_provider`. [CLAUDE.md](../CLAUDE.md) has the full reasoning.
 
 ## Choices without a screen
 

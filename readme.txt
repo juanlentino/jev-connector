@@ -110,7 +110,7 @@ Because key management is handled entirely by the Connectors API introduced in 7
 
 = Is this an AI provider for the core AI Client? =
 
-No, and deliberately so. The core AI Client covers generative capabilities: text, image, speech, video. Jev is not generative. It returns a probability, a choice, or a score with a confidence figure, none of which survive a generative interface. The plugin registers as a non-generative service connector, the same way a spam filter does.
+Not yet. Jev is not an LLM: it returns a probability, a choice, or a score with a confidence figure, and the core AI Client has no capability for that kind of model yet. WordPress checks every AI provider key against a matching provider in the AI Client when it is saved and clears it if there is none, so the plugin registers under its own connector type until the AI Client supports decision models. WordPress stores and masks the key either way.
 
 = Does anything get sent without my say-so? =
 
