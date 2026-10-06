@@ -8,6 +8,25 @@ All notable changes to this project are documented here. The format follows
 
 ### Documentation
 
+- Corrected why the plugin registers as `ai_decision` rather than
+  `ai_provider`. Earlier docs said core validates `ai_provider` keys "against
+  generative operations". It does not: on save, core asks the provider class
+  registered under the same id in the PHP AI Client whether it is configured
+  and clears the key unless the answer is exactly `true`, and with no provider
+  class the answer is `null`. The Jev connector has no provider class because
+  the AI Client has no capability yet for a model that returns probabilities,
+  choices and scores. Jev not being an LLM is unchanged and still stated. The
+  docs now say this is interim: the Core AI team's direction is decision-model
+  support inside the AI Client (php-ai-client#296), after which the plugin
+  becomes an `ai_provider`. Raised by Nik McLaughlin and Jason Adams on Trac
+  #66146 and in #core-ai. Touches the README, `readme.txt` FAQ,
+  `docs/ARCHITECTURE.md`, `docs/HOOKS.md`, the `Connector` docblocks and
+  `CLAUDE.md`. No behaviour change.
+- PHPCS ignores `.claude/`. Local agent worktrees under it hold full copies of
+  the source and made `composer lint` report every class as a duplicate.
+
+### Documentation
+
 - README opens with an "In five lines" example: the smallest honest call, a
   comment spam check. It is executed by
   `ConsumerContractTest::test_readme_five_line_example`, so the snippet at the

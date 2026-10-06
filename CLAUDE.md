@@ -16,13 +16,29 @@ content, and the only consumer (Signal & Noise Tools) never used them.
 
 ## Decisions that must not be quietly reversed
 
-**Do not register as `type => 'ai_provider'`.** This looks like the obvious fix
-and it is wrong. Core hands `ai_provider` keys to the PHP AI Client and
-validates them against it on save, clearing keys it cannot verify. The AI Client
-covers generative capabilities only (text, image, speech, video). Jev returns
-probabilities, choices and scores. Registering as an AI provider would get a
-working key silently wiped. Akismet's non-AI connector is the precedent we
-follow. See `includes/class-connector.php`.
+**Do not register as `type => 'ai_provider'` until a Jev provider class exists
+in the AI Client.** On a `/wp/v2/settings` save, core's
+`_wp_connectors_rest_settings_dispatch()` checks each submitted `ai_provider`
+key with `_wp_connectors_is_ai_api_key_valid()` and clears it unless the result
+is exactly `true`. That function returns `null` when the AI Client registry has
+no provider class for the connector id (`! hasProvider()`), and this plugin has
+none, because the client has no capability for a model that returns
+probabilities, choices and scores (Jev is not an LLM). With a provider class the
+check is only `availability()->isConfigured()`: nothing about being
+non-generative fails, the missing class is the whole reason.
+
+The Core AI team's direction (Nik McLaughlin, Jason Adams, Trac #66146 and
+#core-ai, October 2026) is decision-model support inside the AI Client,
+php-ai-client#296. When that ships: add a provider class, set
+`Connector::TYPE` to `ai_provider`, patch release; the setting names are
+explicit, so no key migration. A provider class today would have to declare no
+models, and the AI plugin would then count Jev toward `has_ai_credentials()` as
+if it could generate text, so do not do that either.
+
+An earlier version of this file said core validates keys "against generative
+operations". That was wrong. So was citing wordpress-develop PR 13031 for it:
+that PR is about how often the check runs (landed as changeset 63348), not
+about provider types. See `includes/class-connector.php`.
 
 **The connector `type` is not a user setting.** Core and the AI plugin compare
 it against `ai_provider` and nothing else: that value triggers AI Client key

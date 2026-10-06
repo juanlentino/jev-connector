@@ -80,8 +80,10 @@ Capability checked by `POST /jev/v1/ask` and `GET /jev/v1/status`. Default
 
 The value core and the AI plugin compare against `ai_provider`. Default
 `ai_decision`. It does not group or place the card; the Connectors screen is
-one flat list. Do not return `ai_provider`; core would hand the key to the generative AI Client for
-validation and clear it. Changing the type does not move the stored key,
+one flat list. Do not return `ai_provider` unless an AI Client provider class
+is registered under this connector's id: core checks `ai_provider` keys against
+that class on save and clears the key when there is none. Changing the type
+does not move the stored key,
 because `setting_name`, `constant_name` and `env_var_name` are declared
 explicitly.
 

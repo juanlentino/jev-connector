@@ -7,6 +7,8 @@
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/build/*</exclude-pattern>
+	<!-- Local agent worktrees hold full copies of the source; gitignored, never in CI. -->
+	<exclude-pattern>/.claude/*</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
 	<arg name="colors"/>

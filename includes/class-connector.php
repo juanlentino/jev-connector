@@ -14,12 +14,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Registers TypeSafe as a connector so WordPress owns the key.
  *
- * Jev is deliberately not registered as an `ai_provider`. That type is
- * special-cased by core: keys are handed to the PHP AI Client and validated
- * against it on save, and a key that fails is cleared. The AI Client covers
- * generative capabilities only, so a System One key would be wiped by a
- * validator that has no idea what it is looking at. Akismet sets the
- * precedent for a non-generative service connector, and this follows it.
+ * Jev is not registered as an `ai_provider` yet. Core checks every submitted
+ * `ai_provider` key on save against the provider class registered under the
+ * same id in the PHP AI Client, and clears the key unless that check returns
+ * true. With no provider class the check returns null and the key is cleared.
+ * The AI Client has no capability yet for a model that returns probabilities,
+ * choices and scores, so there is no provider class to register. When
+ * decision models are supported there (php-ai-client#296), this becomes an
+ * `ai_provider`.
  */
 final class Connector {
 
@@ -66,12 +68,13 @@ final class Connector {
 			'name'           => __( 'TypeSafe Jev', 'connector-for-typesafe-jev' ),
 			'description'    => __( 'System One model for classification, scoring, and typed decisions. Returns probabilities and confidence instead of prose.', 'connector-for-typesafe-jev' ),
 			/**
-			 * Filters the connector type used to group the card.
+			 * Filters the connector type.
 			 *
 			 * Changing this does not move the stored credential, because
 			 * setting_name, constant_name and env_var_name are all declared
-			 * explicitly below. Do not return 'ai_provider' unless you want
-			 * core to validate the key against the generative AI Client.
+			 * explicitly below. Do not return 'ai_provider' unless an AI Client
+			 * provider class is registered under this connector's id: without
+			 * one, core clears the key on save.
 			 *
 			 * @param string $type Connector type.
 			 */
