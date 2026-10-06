@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-05
+
+Documentation and packaging only. No behaviour change. The release exists
+because `readme.txt` and the `Connector` docblocks ship, and the 0.3.0 FAQ
+stated the `ai_provider` mechanism that was retracted on Core Trac #66146.
+
 ### Documentation
 
 - Corrected why the plugin registers as `ai_decision` rather than
@@ -24,9 +30,6 @@ All notable changes to this project are documented here. The format follows
   `CLAUDE.md`. No behaviour change.
 - PHPCS ignores `.claude/`. Local agent worktrees under it hold full copies of
   the source and made `composer lint` report every class as a duplicate.
-
-### Documentation
-
 - README opens with an "In five lines" example: the smallest honest call, a
   comment spam check. It is executed by
   `ConsumerContractTest::test_readme_five_line_example`, so the snippet at the
@@ -44,9 +47,8 @@ All notable changes to this project are documented here. The format follows
   reading's rubric, its unsure-case behaviour and its cost are written down.
   The two repositories now point at each other: S&N Tools already credited
   the connector.
-- "Not an AI provider, on purpose" now links Core Trac #66146 and
-  php-ai-client#296, where the Connectors screen behaviour was reported and
-  corrected.
+- The README section on the connector type links Core Trac #66146 and
+  php-ai-client#296.
 - A "Screenshots" section. The first image is in: the Connectors screen on a
   live WordPress 7.1 site, with TypeSafe Jev connected among the Anthropic and
   Google provider cards, cropped to the card list. It is also
