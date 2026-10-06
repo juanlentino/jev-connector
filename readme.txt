@@ -4,7 +4,7 @@ Tags: ai, classification, api, connector, automation
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -134,6 +134,10 @@ Filters: `jevc_default_model`, `jevc_http_timeout`, `jevc_request_payload`, `jev
 2. One call returning a probability, a named choice and a score, each with its confidence figure.
 
 == Changelog ==
+
+= 0.3.1 =
+* Documentation only, no behaviour change. Corrected the FAQ on why the plugin is not an AI provider yet: WordPress clears an AI provider key on save when no matching AI Client provider exists, and there is none for decision models until the AI Client supports them.
+* The description now opens with a five-line example and lists two screenshots.
 
 = 0.3.0 =
 * The plugin is now a pure connector, like the Anthropic and Google provider connectors: the card under Settings → Connectors, the PHP client, and the REST proxy. The Settings → TypeSafe Jev screen and the two optional modules (comment guardrail, term suggestions) are removed. Model and REST capability are set with the existing filters.
